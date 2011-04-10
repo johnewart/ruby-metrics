@@ -8,10 +8,10 @@ Right now, I have:
 
 * Counters
 * Meters
+* Gauges
 
 Upcoming:
 
-* Gauges
 * Histograms
 * Timers 
 
