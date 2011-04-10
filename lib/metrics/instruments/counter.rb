@@ -2,7 +2,7 @@
 module Metrics
   module Instruments
     class Counter < Base
-      @counter_value
+
       def initialize
         @counter_value = 0
       end
