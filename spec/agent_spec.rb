@@ -14,6 +14,16 @@ describe Metrics::Agent do
     @agent.add_instrument("counter", "test_counter").should == @counter
   end
   
+  it "should allow for creating a gauge with a block via add_instrument" do 
+    begin
+      @agent.add_instrument 'gauge', 'test_gauge' do 
+        "result"
+      end
+    rescue => e
+      fail
+    end
+  end
+  
   it "should start the WEBrick daemon" do
     Thread.stub!(:new).and_return do |block|
       block.call

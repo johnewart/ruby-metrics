@@ -33,4 +33,21 @@ describe Metrics::Instruments do
     @instruments.to_json.should == "{\"test_meter\":\"{\\\"one_minute_rate\\\":0.0,\\\"five_minute_rate\\\":0.0,\\\"fifteen_minute_rate\\\":0.0}\"}"
   end
   
+  it "should not allow for creating a gauge with no block" do 
+    begin
+      @instruments.register 'gauge', 'test_gauge'
+    rescue => e
+      e.to_s.should == "Can't create a gauge without a block"
+    end
+  end
+  
+  it "should allow for creating a gauge with a block" do 
+    begin
+      proc = Proc.new { "result" }
+      @instruments.register 'gauge', 'test_gauge', proc
+    rescue => e
+      fail
+    end
+  end
+  
 end

@@ -5,27 +5,36 @@ describe Metrics::Instruments::Meter do
   end
 
   it "should initialize averages to 0" do 
-    @timer = Metrics::Instruments::Meter.new()
-    @timer.one_minute_rate.should == 0.0
-    @timer.five_minute_rate.should == 0.0
-    @timer.fifteen_minute_rate.should == 0.0
+    meter = Metrics::Instruments::Meter.new()
+    meter.one_minute_rate.should == 0.0
+    meter.five_minute_rate.should == 0.0
+    meter.fifteen_minute_rate.should == 0.0
   end
   
   it "should increment count" do
-    @timer = Metrics::Instruments::Meter.new()
-    @timer.mark(500)
-    @timer.counted.should == 500
-    @timer.uncounted.should == 500
+    meter = Metrics::Instruments::Meter.new()
+    meter.mark(500)
+    meter.counted.should == 500
+    meter.uncounted.should == 500
   end
   
   it "should accept options for the constructor" do
-    @timer = Metrics::Instruments::Meter.new({:interval => "10 seconds", :rateunit => "5 seconds"})
+    meter = Metrics::Instruments::Meter.new({:interval => "10 seconds", :rateunit => "5 seconds"})
   end
   
   it "should tick properly" do
-    @timer = Metrics::Instruments::Meter.new({:interval => "5 seconds", :rateunit => "1 second", :nothread => true})
-    @timer.mark(100)
-    @timer.tick()
-    @timer.five_minute_rate.should == 19.999999999999996
+    meter = Metrics::Instruments::Meter.new({:interval => "5 seconds", :rateunit => "1 second", :nothread => true})
+    meter.mark(100)
+    meter.tick()
+    meter.five_minute_rate.should == 19.999999999999996
+  end
+  
+  it "should tick twice accurately" do
+    meter = Metrics::Instruments::Meter.new({:interval => "5 seconds", :rateunit => "1 second", :nothread => true})
+    meter.mark(100)
+    meter.tick()
+    meter.five_minute_rate.should == 19.999999999999996
+    meter.tick()
+    meter.five_minute_rate.should == 16.319822341482705
   end
 end
