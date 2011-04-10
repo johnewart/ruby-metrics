@@ -32,8 +32,12 @@ module Metrics
       @instruments = Metrics::Instruments
     end
     
-    def add_instrument(type, name)
-      @instruments.register(type, name)
+    def add_instrument(type, name, &block)
+      if block_given?
+        @instruments.register(type, name, block)
+      else
+        @instruments.register(type, name)
+      end
     end
     
     def start
