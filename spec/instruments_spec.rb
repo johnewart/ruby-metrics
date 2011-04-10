@@ -6,7 +6,7 @@ describe Metrics::Instruments do
     @instruments.unregister_all
     
     @counter = Metrics::Instruments::Counter.new
-    @timer = Metrics::Instruments::Timer.new
+    @meter = Metrics::Instruments::Meter.new
   end
 
   it "should initially have no instruments in its hash" do
@@ -19,18 +19,18 @@ describe Metrics::Instruments do
     @instruments.registered.should == {'test_counter' => @counter}
   end
   
-  it "should allow for registering a Timer instrument" do
-    Metrics::Instruments::Timer.stub!(:new).and_return @timer
-    @instruments.register('timer', 'test_timer').should == @timer
-    @instruments.registered.should == {"test_timer" => @timer}
+  it "should allow for registering a Meter instrument" do
+    Metrics::Instruments::Meter.stub!(:new).and_return @meter
+    @instruments.register('meter', 'test_meter').should == @meter
+    @instruments.registered.should == {"test_meter" => @meter}
   end
   
   it "should generate JSON correctly" do 
-    Metrics::Instruments::Timer.stub!(:new).and_return @timer
-    @instruments.register('timer', 'test_timer').should == @timer
-    @instruments.registered.should == {"test_timer" => @timer}
+    Metrics::Instruments::Meter.stub!(:new).and_return @meter
+    @instruments.register('meter', 'test_meter').should == @meter
+    @instruments.registered.should == {"test_meter" => @meter}
     
-    @instruments.to_json.should == "{\"test_timer\":\"{\\\"one_minute_rate\\\":0.0,\\\"five_minute_rate\\\":0.0,\\\"fifteen_minute_rate\\\":0.0}\"}"
+    @instruments.to_json.should == "{\"test_meter\":\"{\\\"one_minute_rate\\\":0.0,\\\"five_minute_rate\\\":0.0,\\\"fifteen_minute_rate\\\":0.0}\"}"
   end
   
 end

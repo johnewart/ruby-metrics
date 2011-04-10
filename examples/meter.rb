@@ -4,7 +4,7 @@ require '../lib/metrics'
 @metrics = Metrics::Agent.new()
 @metrics.start
 
-timer = @metrics.add_instrument('timer', 'my_timer')
+timer = @metrics.add_instrument('meter', 'my_meter')
 timer.mark(500)
 
 step = 0

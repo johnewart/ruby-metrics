@@ -1,19 +1,19 @@
 ## What is this?
 
-This is a Ruby version of [metrics][metrics], developed by Coda Hale at Yammer. Currently this is under *heavy* development -- it needs Gem packaging, more features, validation of metrics, more functional testing, and a little better test coverage. Pull requests happily accepted, please include docs and tests where possible!
+This is a Ruby version of performance metrics inspired by [metrics][metrics] developed by Coda Hale at Yammer. Currently this is under *heavy* development -- it needs Gem packaging, more features, validation of metrics, more functional testing, and a little better test coverage. Pull requests happily accepted, please include docs and tests where possible!
 
 ## What's in this?
 
 Right now, I have:
 
 * Counters
-* Timers
+* Meters
 
 Upcoming:
 
 * Gauges
 * Histograms
-
+* Timers 
 
 ## Getting Started
 

@@ -8,7 +8,7 @@ FIFTEEN_MINUTE_FACTOR = ONE_MINUTE_FACTOR / 15
 
 module Metrics
   module Instruments
-    class Timer < Base
+    class Meter < Base
       attr_reader :counted, :uncounted
       
       def initialize(options = {})

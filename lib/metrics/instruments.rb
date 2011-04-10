@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/instruments/base'
 require File.dirname(__FILE__) + '/instruments/counter'
-require File.dirname(__FILE__) + '/instruments/timer'
+require File.dirname(__FILE__) + '/instruments/meter'
 require File.dirname(__FILE__) + '/instruments/gauge'
 
 require 'json'
@@ -13,8 +13,8 @@ module Metrics
       case type
       when 'counter'
         instrument = Counter.new()
-      when 'timer'
-        instrument = Timer.new()
+      when 'meter'
+        instrument = Meter.new()
       when 'gauge'
         if block != nil
           instrument = Gauge.new(block)
