@@ -19,12 +19,12 @@ Upcoming:
 
 The goal of ruby-metrics is to get up and running quickly. You start an agent, register some instruments, and they're exported over HTTP via JSON. For example, getting started with a counter would look like this:
 
-    @metrics = Metrics::Agent.new()
+    @metrics = Metrics::Agent.new
     @metrics.start
 
-    counter = @metrics.add_instrument('counter', 'my_counter')
-    counter.inc(1)
-    counter.inc(1)
+    counter = @metrics.counter :my_counter
+    counter.incr
+    counter.incr
 
 Then, hitting localhost:8081/status would yield:
 
