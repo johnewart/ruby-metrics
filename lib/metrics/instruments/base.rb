@@ -1,21 +1,19 @@
 module Metrics
   module Instruments
     class Base
-      include Logging
-      
-      def initialize
-      end
-      
+            
       def to_i
+        raise NotImplementedError
       end
       
       def to_s
-        "override this"
+        raise NotImplementedError
       end
       
       def to_f
+        raise NotImplementedError
       end
-      
+
     end
   end
 end

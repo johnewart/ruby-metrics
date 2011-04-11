@@ -1,15 +1,5 @@
 # == Metrics Initialization
 #
-# When installed as a gem, you can activate the Metrics agent one of the following ways:
-#
-# For Rails, add:
-#    config.gem 'metrics'
-# to your initialization sequence.
-#
-# For other frameworks, or to manage the agent manually, invoke Metrics::Agent#manual_start
-# directly.
-#
-require File.dirname(__FILE__) + '/metrics/agent'
 
 module Metrics
   
@@ -21,3 +11,5 @@ module Metrics
   end
   
 end
+
+require File.join(File.dirname(__FILE__), 'metrics', 'agent')

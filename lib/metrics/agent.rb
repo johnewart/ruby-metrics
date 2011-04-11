@@ -25,20 +25,13 @@ end
 module Metrics
   class Agent
     include Logging
+    include Instruments::TypeMethods
     
     attr_reader :instruments
     
-    def initialize()
+    def initialize
       logger.debug "Initializing Metrics..."
       @instruments = Metrics::Instruments
-    end
-    
-    def add_instrument(type, name, &block)
-      if block_given?
-        @instruments.register(type, name, block)
-      else
-        @instruments.register(type, name)
-      end
     end
     
     def start
