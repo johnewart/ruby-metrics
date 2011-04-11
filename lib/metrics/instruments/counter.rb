@@ -6,11 +6,11 @@ module Metrics
         @value = 0
       end
       
-      def inc(value)
+      def inc(value = 1)
         @value += value
       end
       
-      def dec(value)
+      def dec(value = 1)
         @value -= value
       end
       
