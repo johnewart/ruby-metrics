@@ -1,5 +1,5 @@
-require 'logger'
-require File.dirname(__FILE__) + '/instruments'
+require File.join(File.dirname(__FILE__), 'logging')
+require File.join(File.dirname(__FILE__), 'instruments')
 require 'webrick'
 
 class Status < WEBrick::HTTPServlet::AbstractServlet
@@ -24,6 +24,7 @@ end
 
 module Metrics
   class Agent
+    include Logging
     
     attr_reader :instruments
     
@@ -42,16 +43,6 @@ module Metrics
     
     def start
       start_daemon_thread
-    end
-    
-    def logger
-      self.class.logger
-    end
-    
-    class << self
-      def logger
-        @logger ||= Logger.new(STDOUT)
-      end
     end
     
     protected

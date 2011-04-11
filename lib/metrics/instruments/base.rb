@@ -1,8 +1,8 @@
-
 module Metrics
   module Instruments
     class Base
-
+      include Logging
+      
       def initialize
       end
       
@@ -15,16 +15,7 @@ module Metrics
       
       def to_f
       end
-
-      def logger
-        self.class.logger
-      end
       
-      class << self
-        def logger
-          @logger ||= Logger.new(STDOUT)
-        end
-      end
     end
   end
 end
