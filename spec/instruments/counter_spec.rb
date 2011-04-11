@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Metrics::Instruments::Counter do
   before(:each) do
-    @counter = Metrics::Instruments::Counter.new()
+    @counter = Metrics::Instruments::Counter.new
   end
 
   it "should create a new entity with zero as its value" do

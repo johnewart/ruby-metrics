@@ -12,9 +12,9 @@ module Metrics
     def self.register(type, name, block = nil)
       case type
       when 'counter'
-        instrument = Counter.new()
+        instrument = Counter.new
       when 'meter'
-        instrument = Meter.new()
+        instrument = Meter.new
       when 'gauge'
         if block != nil
           instrument = Gauge.new(block)

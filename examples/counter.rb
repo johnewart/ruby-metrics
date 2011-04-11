@@ -1,7 +1,7 @@
 require 'rubygems'
 require '../lib/metrics'
 
-@metrics = Metrics::Agent.new()
+@metrics = Metrics::Agent.new
 @metrics.start
 
 counter = @metrics.add_instrument('counter', 'my_counter')

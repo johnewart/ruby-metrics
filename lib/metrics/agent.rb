@@ -27,7 +27,7 @@ module Metrics
     
     attr_reader :instruments
     
-    def initialize()
+    def initialize
       logger.debug "Initializing Metrics..."
       @instruments = Metrics::Instruments
     end

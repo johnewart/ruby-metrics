@@ -34,7 +34,7 @@ module Metrics
           @timer_thread = Thread.new do
             sleep_time = interval.to("seconds").scalar
             begin
-              while(true)
+              loop do
                 self.tick
                 sleep(sleep_time)
               end
