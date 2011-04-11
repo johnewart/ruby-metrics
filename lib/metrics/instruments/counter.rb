@@ -1,31 +1,31 @@
-
 module Metrics
   module Instruments
     class Counter < Base
-
+      
       def initialize
-        @counter_value = 0
+        @value = 0
       end
       
-      def inc (value)
-        @counter_value += value
+      def inc(value)
+        @value += value
       end
       
-      def dec (value)
-        @counter_value -= value
+      def dec(value)
+        @value -= value
       end
       
       def clear
-        @counter_value = 0
+        @value = 0
       end
       
       def to_i
-        @counter_value.to_i
+        @value.to_i
       end
       
       def to_s
-        @counter_value.to_s
+        @value.to_s
       end
+      
     end
   end
 end

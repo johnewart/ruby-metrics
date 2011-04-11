@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Metrics::Instruments::Counter do
   before(:each) do
-    @counter = Metrics::Instruments::Counter.new()
+    @counter = Metrics::Instruments::Counter.new
   end
-
+  
   it "should create a new entity with zero as its value" do
     @counter.to_i.should == 0
   end
@@ -13,12 +13,11 @@ describe Metrics::Instruments::Counter do
     @counter.inc(1)
     @counter.to_i.should == 1
   end
-
+  
   it "should decrement its counter by one" do
     @counter.dec(1)
     @counter.to_i.should == -1
   end
-
   
   it "should clear the counter correctly" do 
     @counter.clear
