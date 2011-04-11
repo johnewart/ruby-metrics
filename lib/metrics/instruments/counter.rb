@@ -9,12 +9,10 @@ module Metrics
       
       def inc (value)
         @counter_value += value
-        @counter_value
       end
       
       def dec (value)
         @counter_value -= value
-        @counter_value
       end
       
       def clear

@@ -31,6 +31,16 @@ describe Metrics::Instruments::Counter do
     @counter.to_s.should == "0"
   end
   
+  it "should return the new count when incrementing" do
+    lambda do
+      @counter.inc(1)
+    end.should change{ @counter.to_i }.by(1)
+  end
   
+  it "should return the new count when decrementing" do
+    lambda do
+      @counter.dec(1)
+    end.should change{ @counter.to_i }.by(-1)
+  end
   
 end
