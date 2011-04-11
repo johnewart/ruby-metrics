@@ -11,16 +11,12 @@ describe Metrics::Agent do
   it "should add an instrument correctly" do 
     @counter = Metrics::Instruments::Counter.new
     Metrics::Instruments::Counter.stub!(:new).and_return @counter
-    @agent.add_instrument("counter", "test_counter").should == @counter
+    @agent.counter(:test_counter).should == @counter
   end
   
-  it "should allow for creating a gauge with a block via add_instrument" do 
-    begin
-      @agent.add_instrument 'gauge', 'test_gauge' do 
-        "result"
-      end
-    rescue => e
-      fail
+  it "should allow for creating a gauge with a block via #gauge" do 
+    @agent.gauge :test_gauge do 
+      "result"
     end
   end
   

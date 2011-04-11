@@ -15,39 +15,33 @@ describe Metrics::Instruments do
   
   it "should allow for registering a Counter instrument" do
     Metrics::Instruments::Counter.stub!(:new).and_return @counter
-    @instruments.register('counter', 'test_counter').should == @counter
-    @instruments.registered.should == {'test_counter' => @counter}
+    @instruments.register(:counter, :test_counter).should == @counter
+    @instruments.registered.should == {:test_counter => @counter}
   end
   
   it "should allow for registering a Meter instrument" do
     Metrics::Instruments::Meter.stub!(:new).and_return @meter
-    @instruments.register('meter', 'test_meter').should == @meter
-    @instruments.registered.should == {"test_meter" => @meter}
+    @instruments.register(:meter, :test_meter).should == @meter
+    @instruments.registered.should == {:test_meter => @meter}
   end
   
   it "should generate JSON correctly" do 
     Metrics::Instruments::Meter.stub!(:new).and_return @meter
-    @instruments.register('meter', 'test_meter').should == @meter
-    @instruments.registered.should == {"test_meter" => @meter}
+    @instruments.register(:meter, :test_meter).should == @meter
+    @instruments.registered.should == {:test_meter => @meter}
     
     @instruments.to_json.should == "{\"test_meter\":\"{\\\"one_minute_rate\\\":0.0,\\\"five_minute_rate\\\":0.0,\\\"fifteen_minute_rate\\\":0.0}\"}"
   end
   
   it "should not allow for creating a gauge with no block" do 
-    begin
-      @instruments.register 'gauge', 'test_gauge'
-    rescue => e
-      e.to_s.should == "Can't create a gauge without a block"
-    end
+    lambda do
+      @instruments.register :gauge, :test_gauge
+    end.should raise_error(ArgumentError)
   end
   
   it "should allow for creating a gauge with a block" do 
-    begin
-      proc = Proc.new { "result" }
-      @instruments.register 'gauge', 'test_gauge', proc
-    rescue => e
-      fail
-    end
+    proc = Proc.new { "result" }
+    @instruments.register :gauge, :test_gauge, &proc
   end
   
 end

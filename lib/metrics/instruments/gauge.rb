@@ -2,7 +2,8 @@ module Metrics
   module Instruments
     class Gauge < Base
       
-      def initialize(block)
+      def initialize(&block)
+        raise ArgumentError, "a block is required" unless block_given?
         @block = block
       end
       

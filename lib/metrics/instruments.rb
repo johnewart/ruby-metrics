@@ -9,21 +9,14 @@ module Metrics
   module Instruments
     @instruments = {}
     
-    def self.register(type, name, block = nil)
-      case type
-      when 'counter'
-        instrument = Counter.new
-      when 'meter'
-        instrument = Meter.new
-      when 'gauge'
-        if block != nil
-          instrument = Gauge.new(block)
-        else
-          raise "Can't create a gauge without a block"
-        end
-      end
-      
-      @instruments[name] = instrument
+    @types = {
+      :counter  => Counter,
+      :meter    => Meter,
+      :gauge    => Gauge,
+    }
+    
+    def self.register(type, name, &block)
+      @instruments[name] = @types[type].new(&block)
     end
     
     def self.unregister_all
@@ -37,5 +30,26 @@ module Metrics
     def self.to_json
       @instruments.to_json 
     end
+    
+    module TypeMethods
+      
+      def register(type, name, &block)
+        Metrics::Instruments.register(type, name, &block)
+      end
+      
+      def counter(name)
+        register(:counter, name)
+      end
+      
+      def meter(name)
+        register(:counter, name)
+      end
+      
+      def gauge(name, &block)
+        register(:gauge, name, &block)
+      end
+      
+    end
+    
   end
 end
