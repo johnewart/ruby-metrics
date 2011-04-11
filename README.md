@@ -2,6 +2,10 @@
 
 This is a Ruby version of performance metrics inspired by [metrics][metrics] developed by Coda Hale at Yammer. Currently this is under *heavy* development -- it needs Gem packaging, more features, validation of metrics, more functional testing, and a little better test coverage. Pull requests happily accepted, please include docs and tests where possible!
 
+## What needs to be done?
+
+Among other important things, this needs to be made more thread-safe. I'm currently looking at Mr. Nutter's ruby-atomic gem for making this less tedious but any suggestions are welcome!
+
 ## What's in this?
 
 Right now, I have:
