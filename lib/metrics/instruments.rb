@@ -3,6 +3,9 @@ require File.join(File.dirname(__FILE__), 'instruments', 'counter')
 require File.join(File.dirname(__FILE__), 'instruments', 'meter')
 require File.join(File.dirname(__FILE__), 'instruments', 'gauge')
 
+require File.join(File.dirname(__FILE__), 'statistics', 'sample')
+require File.join(File.dirname(__FILE__), 'statistics', 'uniform_sample')
+
 require 'json'
 
 module Metrics
