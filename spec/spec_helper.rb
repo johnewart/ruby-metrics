@@ -6,7 +6,8 @@ SimpleCov.start do
   merge_timeout 3600
 end
 
-require File.dirname(__FILE__) + "/../lib/metrics"
+$:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'metrics'
 
 RSpec.configure do |config|
   config.mock_with :rspec

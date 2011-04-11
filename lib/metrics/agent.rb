@@ -1,5 +1,5 @@
 require 'logger'
-require File.dirname(__FILE__) + '/instruments'
+require File.join(File.dirname(__FILE__), 'instruments')
 require 'webrick'
 
 class Status < WEBrick::HTTPServlet::AbstractServlet

@@ -8,7 +8,7 @@ describe Metrics::Instruments do
     @counter = Metrics::Instruments::Counter.new
     @meter = Metrics::Instruments::Meter.new
   end
-
+  
   it "should initially have no instruments in its hash" do
     @instruments.registered.should == {}
   end

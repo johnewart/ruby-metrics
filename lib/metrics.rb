@@ -9,4 +9,4 @@
 # For other frameworks, or to manage the agent manually, invoke Metrics::Agent#manual_start
 # directly.
 #
-require File.dirname(__FILE__) + '/metrics/agent'
+require File.join(File.dirname(__FILE__), 'metrics', 'agent')

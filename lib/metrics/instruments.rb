@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/instruments/base'
-require File.dirname(__FILE__) + '/instruments/counter'
-require File.dirname(__FILE__) + '/instruments/meter'
-require File.dirname(__FILE__) + '/instruments/gauge'
+require File.join(File.dirname(__FILE__), 'instruments', 'base')
+require File.join(File.dirname(__FILE__), 'instruments', 'counter')
+require File.join(File.dirname(__FILE__), 'instruments', 'meter')
+require File.join(File.dirname(__FILE__), 'instruments', 'gauge')
 
 require 'json'
 
