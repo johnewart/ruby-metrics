@@ -1,33 +1,33 @@
-
 module Metrics
   module Instruments
     class Counter < Base
-
+      
       def initialize
-        @counter_value = 0
+        @value = 0
       end
       
-      def inc (value)
-        @counter_value += value
-        @counter_value
+      def inc(value = 1)
+        @value += value
       end
+      alias_method :incr, :inc
       
-      def dec (value)
-        @counter_value -= value
-        @counter_value
+      def dec(value = 1)
+        @value -= value
       end
+      alias_method :decr, :dec
       
       def clear
-        @counter_value = 0
+        @value = 0
       end
       
       def to_i
-        @counter_value.to_i
+        @value.to_i
       end
       
       def to_s
-        @counter_value.to_s
+        @value.to_s
       end
+      
     end
   end
 end
