@@ -3,11 +3,12 @@ require 'ruby-units'
 module Metrics
   module Instruments
     class Meter < Base
-      INTERVAL = "5 seconds"
-      INTERVAL_IN_NS = INTERVAL.to("nanoseconds").scalar
-      ONE_MINUTE_FACTOR = 1 / Math.exp(INTERVAL.to("minutes").scalar)
-      FIVE_MINUTE_FACTOR = ONE_MINUTE_FACTOR / 5
-      FIFTEEN_MINUTE_FACTOR = ONE_MINUTE_FACTOR / 15
+      # From http://www.teamquest.com/pdfs/whitepaper/ldavg2.pdf
+      INTERVAL = 5.0
+      INTERVAL_IN_NS = 5000000000.0
+      ONE_MINUTE_FACTOR     = 1 - Math.exp(-INTERVAL / 60.0)
+      FIVE_MINUTE_FACTOR    = 1 - Math.exp(-INTERVAL / (60.0 * 5.0))
+      FIFTEEN_MINUTE_FACTOR = 1 - Math.exp(-INTERVAL / (60.0 * 15.0))
       
       attr_reader :counted, :uncounted
       
@@ -25,24 +26,25 @@ module Metrics
         if options[:rateunit]
           @rateunit = options[:rateunit]
         else
-          @rateunit = "1 second"
+          @rateunit = interval
         end
         
-        @ratemultiplier = @rateunit.to("nanoseconds").scalar 
+        # HACK: this is here because ruby-units thinks 1s in ns is 999,999,999.9999999 not 1bn 
+        # TODO: either fix ruby-units, or remove it?
+        @ratemultiplier = @rateunit.to("nanoseconds").scalar.ceil
         
-        unless options[:nothread] == true
-          @timer_thread = Thread.new do
-            sleep_time = interval.to("seconds").scalar
-            begin
-              loop do
-                self.tick
-                sleep(sleep_time)
-              end
-            rescue Exception => e
-              logger.error "Error in timer thread: #{e.class.name}: #{e}\n  #{e.backtrace.join("\n  ")}"
-            end # begin
-          end # thread new
-        end
+        @timer_thread = Thread.new do
+          sleep_time = interval.to("seconds").scalar
+          begin
+            loop do
+              self.tick
+              sleep(sleep_time)
+            end
+          rescue Exception => e
+            logger.error "Error in timer thread: #{e.class.name}: #{e}\n  #{e.backtrace.join("\n  ")}"
+          end # begin
+        end # thread new
+
       end
       
       def clear
@@ -53,14 +55,20 @@ module Metrics
         @counted += count
       end
       
+      def calc_rate(rate, factor, count)
+        rate = rate + (factor * (count - rate))
+        rate
+      end
+      
       def tick
-        count = @uncounted 
+        count = @uncounted.to_f  / INTERVAL_IN_NS.to_f
+
         if (@initialized)
-          @one_minute_rate     += (ONE_MINUTE_FACTOR.to_f * ((count.to_f / INTERVAL_IN_NS.to_f) - @one_minute_rate.to_f))
-          @five_minute_rate    += (FIVE_MINUTE_FACTOR.to_f * ((count.to_f / INTERVAL_IN_NS.to_f) - @five_minute_rate.to_f))
-          @fifteen_minute_rate += (FIFTEEN_MINUTE_FACTOR.to_f * ((count.to_f / INTERVAL_IN_NS.to_f) - @fifteen_minute_rate.to_f))
+          @one_minute_rate      = calc_rate(@one_minute_rate,     ONE_MINUTE_FACTOR,     count)
+          @five_minute_rate     = calc_rate(@five_minute_rate,    FIVE_MINUTE_FACTOR,    count)
+          @fifteen_minute_rate  = calc_rate(@fifteen_minute_rate, FIFTEEN_MINUTE_FACTOR, count)
         else
-          @one_minute_rate = @five_minute_rate = @fifteen_minute_rate  = (count.to_f / INTERVAL_IN_NS.to_f)
+          @one_minute_rate = @five_minute_rate = @fifteen_minute_rate  = (count)
           @initialized = true
         end
         
