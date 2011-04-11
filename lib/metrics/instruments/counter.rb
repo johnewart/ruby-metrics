@@ -1,8 +1,7 @@
-
 module Metrics
   module Instruments
     class Counter < Base
-
+      
       def initialize
         @counter_value = 0
       end
@@ -28,6 +27,7 @@ module Metrics
       def to_s
         @counter_value.to_s
       end
+      
     end
   end
 end

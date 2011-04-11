@@ -23,6 +23,7 @@ module Metrics
           @logger ||= Logger.new(STDOUT)
         end
       end
+      
     end
   end
 end

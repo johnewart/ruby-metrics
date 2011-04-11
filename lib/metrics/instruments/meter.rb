@@ -1,14 +1,14 @@
 require 'ruby-units'
 
-INTERVAL = "5 seconds"
-INTERVAL_IN_NS = INTERVAL.to("nanoseconds").scalar
-ONE_MINUTE_FACTOR = 1 / Math.exp(INTERVAL.to("minutes").scalar)
-FIVE_MINUTE_FACTOR = ONE_MINUTE_FACTOR / 5
-FIFTEEN_MINUTE_FACTOR = ONE_MINUTE_FACTOR / 15
-
 module Metrics
   module Instruments
     class Meter < Base
+      INTERVAL = "5 seconds"
+      INTERVAL_IN_NS = INTERVAL.to("nanoseconds").scalar
+      ONE_MINUTE_FACTOR = 1 / Math.exp(INTERVAL.to("minutes").scalar)
+      FIVE_MINUTE_FACTOR = ONE_MINUTE_FACTOR / 5
+      FIFTEEN_MINUTE_FACTOR = ONE_MINUTE_FACTOR / 15
+      
       attr_reader :counted, :uncounted
       
       def initialize(options = {})
@@ -44,7 +44,7 @@ module Metrics
           end # thread new
         end
       end
-            
+      
       def clear
       end
       
@@ -78,9 +78,9 @@ module Metrics
       def fifteen_minute_rate
         @fifteen_minute_rate * @ratemultiplier
       end
-            
+      
       def to_s
-        return {
+        {
           :one_minute_rate => self.one_minute_rate,
           :five_minute_rate => self.five_minute_rate,
           :fifteen_minute_rate => self.fifteen_minute_rate

@@ -1,8 +1,7 @@
-
 module Metrics
   module Instruments
     class Gauge < Base
-
+      
       def initialize(block)
         @block = block
       end
