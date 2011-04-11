@@ -40,7 +40,7 @@ module Metrics
     
     protected
     def start_daemon_thread(connection_options = {})
-      logger.debug "Creating Metrics worker thread."
+      logger.debug "Creating Metrics daemon thread."
       @daemon_thread = Thread.new do
         begin
           server = WEBrick::HTTPServer.new ({:Port => 8001})
