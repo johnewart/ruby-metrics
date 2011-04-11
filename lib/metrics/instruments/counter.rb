@@ -9,10 +9,12 @@ module Metrics
       def inc(value = 1)
         @value += value
       end
+      alias_method :incr, :inc
       
       def dec(value = 1)
         @value -= value
       end
+      alias_method :decr, :dec
       
       def clear
         @value = 0

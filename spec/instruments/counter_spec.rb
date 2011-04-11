@@ -35,6 +35,18 @@ describe Metrics::Instruments::Counter do
     end.should change{ @counter.to_i }.by(-1)
   end
   
+  it "should alias #incr to #inc" do
+    lambda do
+      @counter.incr
+    end.should change{ @counter.to_i }.by(1)
+  end
+  
+  it "should alias #decr to #dec" do
+    lambda do
+      @counter.decr
+    end.should change{ @counter.to_i }.by(-1)
+  end
+  
   it "should clear the counter correctly" do 
     @counter.clear
     @counter.to_i.should == 0
