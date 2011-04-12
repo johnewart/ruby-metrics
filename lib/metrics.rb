@@ -1,15 +1,1 @@
-# == Metrics Initialization
-#
-
-module Metrics
-  
-  class << self
-    attr_writer :logger
-    def logger
-      @logger ||= Logger.new(STDOUT)
-    end
-  end
-  
-end
-
-require File.join(File.dirname(__FILE__), 'metrics', 'agent')
+# this file is still required till the name of the gem is defined. Currently assuming the gem would be called ruby-metrics

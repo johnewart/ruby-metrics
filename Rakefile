@@ -1,5 +1,8 @@
 require "rubygems"
 require "bundler"
+require "rspec/core/rake_task"
+Bundler::GemHelper.install_tasks
+
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -8,7 +11,6 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 
-require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new do |t|
   t.rspec_opts = ["-c", "-f progress", "-r ./spec/spec_helper.rb"]
   t.pattern = 'spec/**/*_spec.rb'
