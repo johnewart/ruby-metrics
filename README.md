@@ -14,10 +14,11 @@ Right now, I have:
 * Counters
 * Meters
 * Gauges
-
+* Histograms w/ uniform sampling
+ 
 Upcoming:
 
-* Histograms
+* Histograms w/ exponentially decaying sampling
 * Timers 
 
 ## Getting Started
