@@ -1,3 +1,4 @@
+
 ## What is this?
 
 This is a Ruby version of performance metrics inspired by [metrics][metrics] developed by Coda Hale at Yammer. Currently this is under *heavy* development -- it needs Gem packaging, more features, validation of metrics, more functional testing, and a little better test coverage. Pull requests happily accepted, please include docs and tests where possible!
@@ -36,3 +37,7 @@ Then, hitting localhost:8081/status would yield:
 
 
 [metrics]: https://github.com/codahale/metrics
+
+## License
+
+Copyright 2011 John Ewart <john@johnewart.net>. Released under the MIT license. See the file LICENSE for further details.
