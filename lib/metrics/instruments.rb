@@ -1,10 +1,12 @@
+require File.join(File.dirname(__FILE__), 'statistics', 'sample')
+require File.join(File.dirname(__FILE__), 'statistics', 'uniform_sample')
+
 require File.join(File.dirname(__FILE__), 'instruments', 'base')
 require File.join(File.dirname(__FILE__), 'instruments', 'counter')
 require File.join(File.dirname(__FILE__), 'instruments', 'meter')
 require File.join(File.dirname(__FILE__), 'instruments', 'gauge')
+require File.join(File.dirname(__FILE__), 'instruments', 'histogram')
 
-require File.join(File.dirname(__FILE__), 'statistics', 'sample')
-require File.join(File.dirname(__FILE__), 'statistics', 'uniform_sample')
 
 require 'json'
 
@@ -13,9 +15,10 @@ module Metrics
     @instruments = {}
     
     @types = {
-      :counter  => Counter,
-      :meter    => Meter,
-      :gauge    => Gauge,
+      :counter   => Counter,
+      :meter     => Meter,
+      :gauge     => Gauge,
+      :histogram => Histogram
     }
     
     def self.register(type, name, &block)
@@ -52,6 +55,9 @@ module Metrics
         register(:gauge, name, &block)
       end
       
+      def histogram(name)
+        register(:histogram, name)
+      end
     end
     
   end
