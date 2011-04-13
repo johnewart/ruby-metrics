@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-metrics (0.0.1)
+    ruby-metrics (0.5.0)
       json
       ruby-units
 
