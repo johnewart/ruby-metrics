@@ -12,4 +12,4 @@ module Metrics
   
 end
 
-require File.join(File.dirname(__FILE__), 'metrics', 'agent')
+require File.join(File.dirname(__FILE__), 'ruby-metrics', 'agent')

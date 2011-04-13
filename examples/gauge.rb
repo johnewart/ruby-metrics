@@ -1,5 +1,5 @@
 require 'rubygems'
-require '../lib/metrics'
+require '../lib/ruby-metrics'
 
 @metrics = Metrics::Agent.new
 @metrics.start

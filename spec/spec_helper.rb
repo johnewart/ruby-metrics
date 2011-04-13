@@ -7,7 +7,7 @@ SimpleCov.start do
 end
 
 $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-require 'metrics'
+require 'ruby-metrics'
 
 RSpec.configure do |config|
   config.mock_with :rspec
