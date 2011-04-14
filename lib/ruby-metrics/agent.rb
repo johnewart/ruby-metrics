@@ -29,9 +29,10 @@ module Metrics
     
     attr_reader :instruments
     
-    def initialize
+    def initialize(port = 8001)
       logger.debug "Initializing Metrics..."
       @instruments = Metrics::Instruments
+      @port = port
     end
     
     def start
@@ -43,7 +44,7 @@ module Metrics
       logger.debug "Creating Metrics daemon thread."
       @daemon_thread = Thread.new do
         begin
-          server = WEBrick::HTTPServer.new ({:Port => 8001})
+          server = WEBrick::HTTPServer.new ({:Port => @port})
           server.mount "/status", Status, @instruments
           server.start
         rescue Exception => e

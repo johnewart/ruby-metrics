@@ -1,7 +1,8 @@
 require 'rubygems'
 require '../lib/ruby-metrics'
 
-@metrics = Metrics::Agent.new
+# Specify a port for the agent
+@metrics = Metrics::Agent.new(8081)
 @metrics.start
 
 timer = @metrics.meter :my_meter
@@ -10,7 +11,7 @@ timer.mark(500)
 step = 0
 
 # This is here so that we will run indefinitely so you can hit the 
-# status page on localhost:8001/status
+# status page on localhost:8081/status
 loop do
   sleep 1
   
