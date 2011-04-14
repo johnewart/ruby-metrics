@@ -32,7 +32,7 @@ The goal of ruby-metrics is to get up and running quickly. You start an agent, r
     counter.incr
     counter.incr
 
-Then, hitting localhost:8081/status would yield:
+Then, hitting localhost:8001/status would yield:
 
     {"my_counter":"2"}
 
