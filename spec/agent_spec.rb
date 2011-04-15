@@ -20,6 +20,24 @@ describe Metrics::Agent do
     end
   end
   
+  it "should add a Histogram instrument using uniform sampling" do
+    histogram = Metrics::Instruments::UniformHistogram.new
+    Metrics::Instruments::UniformHistogram.stub!(:new).and_return histogram
+    @agent.uniform_histogram(:test_histogram).should == histogram
+  end
+
+  it "should allow for registering a Histogram instrument using exponentially decaying sampling" do
+    histogram = Metrics::Instruments::ExponentialHistogram.new
+    Metrics::Instruments::ExponentialHistogram.stub!(:new).and_return histogram
+    @agent.exponential_histogram(:test_histogram).should == histogram
+  end  
+
+  it "should set up a histogram using uniform distribution if just a histogram is registered" do
+    histogram = Metrics::Instruments::UniformHistogram.new
+    Metrics::Instruments::UniformHistogram.stub!(:new).and_return histogram
+    @agent.histogram(:test_histogram).should == histogram
+  end
+  
   it "should add a meter instrument correctly" do
     @meter = Metrics::Instruments::Meter.new
     Metrics::Instruments::Meter.stub!(:new).and_return @meter

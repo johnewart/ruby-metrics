@@ -24,6 +24,21 @@ describe Metrics::Instruments do
     @instruments.register(:meter, :test_meter).should == @meter
     @instruments.registered.should == {:test_meter => @meter}
   end
+
+  it "should allow for registering a Histogram instrument using uniform sampling" do
+    histogram = Metrics::Instruments::UniformHistogram.new
+    Metrics::Instruments::UniformHistogram.stub!(:new).and_return histogram
+    @instruments.register(:uniform_histogram, :test_histogram).should == histogram
+    @instruments.registered.should == {:test_histogram => histogram}
+  end
+
+  it "should allow for registering a Histogram instrument using exponentially decaying sampling" do
+    histogram = Metrics::Instruments::ExponentialHistogram.new
+    Metrics::Instruments::ExponentialHistogram.stub!(:new).and_return histogram
+    @instruments.register(:exponential_histogram, :test_histogram).should == histogram
+    @instruments.registered.should == {:test_histogram => histogram}
+  end
+
   
   it "should generate JSON correctly" do 
     Metrics::Instruments::Meter.stub!(:new).and_return @meter

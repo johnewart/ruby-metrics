@@ -15,10 +15,10 @@ Right now, I have:
 * Meters
 * Gauges
 * Histograms w/ uniform sampling
+* Histograms w/ exponentially decaying sampling
  
 Upcoming:
 
-* Histograms w/ exponentially decaying sampling
 * Timers 
 
 ## Getting Started

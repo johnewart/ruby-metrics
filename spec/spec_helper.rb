@@ -2,7 +2,8 @@ require 'simplecov'
 
 SimpleCov.start do
   add_filter "/spec/"
-  add_group "Instruments", "lib/metrics/instruments"
+  add_group "Instruments", "metrics/instruments"
+  add_group "Statistical Samples", "metrics/statistics"
   merge_timeout 3600
 end
 

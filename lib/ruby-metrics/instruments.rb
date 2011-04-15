@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), 'statistics', 'sample')
 require File.join(File.dirname(__FILE__), 'statistics', 'uniform_sample')
+require File.join(File.dirname(__FILE__), 'statistics', 'exponential_sample')
 
 require File.join(File.dirname(__FILE__), 'instruments', 'base')
 require File.join(File.dirname(__FILE__), 'instruments', 'counter')
@@ -15,10 +16,11 @@ module Metrics
     @instruments = {}
     
     @types = {
-      :counter   => Counter,
-      :meter     => Meter,
-      :gauge     => Gauge,
-      :histogram => Histogram
+      :counter                => Counter,
+      :meter                  => Meter,
+      :gauge                  => Gauge,
+      :exponential_histogram  => ExponentialHistogram,
+      :uniform_histogram      => UniformHistogram
     }
     
     def self.register(type, name, &block)
@@ -55,8 +57,15 @@ module Metrics
         register(:gauge, name, &block)
       end
       
-      def histogram(name)
-        register(:histogram, name)
+      def uniform_histogram(name)
+        register(:uniform_histogram, name)
+      end
+      
+      # For backwards compatibility
+      alias_method :histogram, :uniform_histogram
+      
+      def exponential_histogram(name)
+        register(:exponential_histogram, name)
       end
     end
     

@@ -2,9 +2,14 @@ module Metrics
   module Instruments
     class Histogram < Base
       
-      def initialize
+      def initialize(type = :uniform)
         @count = 0
-        @sample = Metrics::Statistics::UniformSample.new
+        case type
+        when :uniform
+          @sample = Metrics::Statistics::UniformSample.new
+        when :exponential
+          @sample = Metrics::Statistics::ExponentialSample.new
+        end
         @min = nil
         @max = nil
         @sum = 0
@@ -151,5 +156,19 @@ module Metrics
       end
       
     end
+  
+    class ExponentialHistogram < Histogram
+      def initialize
+        super(:exponential)
+      end
+    end
+  
+    class UniformHistogram < Histogram
+      def initialize
+        super(:uniform)
+      end
+    end
+    
   end
+  
 end
