@@ -1,4 +1,7 @@
-coverage
 *.gem
 pkg/*
 .DS_Store
+.bundle
+binstubs/*
+coverage/
+*.swp

@@ -1,0 +1,11 @@
+if RUBY_PLATFORM =~ /darwin/
+  require 'autotest/growl'
+  require 'autotest/fsevent'
+end
+
+Autotest.add_hook :initialize do |autotest|
+  %w{.git .svn .hg .DS_Store ._* vendor tmp log doc binstubs/*}.each do |exception|
+    autotest.add_exception(exception)
+  end
+end
+
