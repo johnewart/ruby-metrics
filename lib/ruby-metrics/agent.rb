@@ -25,7 +25,7 @@ end
 module Metrics
   class Agent
     include Logging
-    include Instruments::TypeMethods
+    include Instruments::Instrumentation
     
     attr_reader :instruments
     
@@ -38,7 +38,7 @@ module Metrics
     def start
       start_daemon_thread
     end
-    
+      
     protected
     def start_daemon_thread(connection_options = {})
       logger.debug "Creating Metrics daemon thread."

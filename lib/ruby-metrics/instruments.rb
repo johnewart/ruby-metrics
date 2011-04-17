@@ -13,6 +13,7 @@ require 'json'
 
 module Metrics
   module Instruments
+
     @instruments = {}
     
     @types = {
@@ -34,39 +35,28 @@ module Metrics
     def self.registered
       @instruments
     end
+
+    def self.instruments
+      @types.keys
+    end
     
     def self.to_json
       @instruments.to_json 
     end
-    
-    module TypeMethods
-      
-      def register(type, name, &block)
-        Metrics::Instruments.register(type, name, &block)
+
+    module Instrumentation
+
+      Metrics::Instruments.instruments.each do |instrument|
+
+        define_method(instrument) do |name, &block|
+          Metrics::Instruments.register(instrument, name, &block)
+        end
+
       end
-      
-      def counter(name)
-        register(:counter, name)
-      end
-      
-      def meter(name)
-        register(:meter, name)
-      end
-      
-      def gauge(name, &block)
-        register(:gauge, name, &block)
-      end
-      
-      def uniform_histogram(name)
-        register(:uniform_histogram, name)
-      end
-      
+
       # For backwards compatibility
       alias_method :histogram, :uniform_histogram
-      
-      def exponential_histogram(name)
-        register(:exponential_histogram, name)
-      end
+    
     end
     
   end
