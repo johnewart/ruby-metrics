@@ -2,6 +2,13 @@ require 'spec_helper.rb'
 
 describe Metrics::Agent do
 
+  let(:logger) { double(:logger) }
+
+  before(:each) do
+    Metrics::Agent.stub!(:logger).and_return(logger)
+    logger.stub!(:debug).and_return('') # quiet logging for the soul
+  end
+
   describe '#new' do
 
     context 'with no arguments' do
@@ -61,16 +68,43 @@ describe Metrics::Agent do
 
   end
 
-  it "should start the WEBrick daemon" do
-    Thread.stub!(:new).and_return do |block|
-      block.call
+  describe '#start_daemon_thread' do
+
+    let(:mock_server) { mock(WEBrick::HTTPServer) }
+
+    before do
+      Thread.stub!(:new).and_return do |block|
+        block.call
+      end
     end
-    
-    mock_server = mock(WEBrick::HTTPServer)
-    WEBrick::HTTPServer.should_receive(:new).and_return mock_server
-    mock_server.should_receive(:mount)
-    mock_server.should_receive(:start)
-    subject.start
+
+    context 'when WEBrick behaves' do
+
+      before do
+        WEBrick::HTTPServer.should_receive(:new).and_return mock_server
+      end
+      
+      it "should start and mount the WEBrick daemon" do
+        mock_server.should_receive(:mount)
+        mock_server.should_receive(:start)
+        subject.start
+      end
+
+    end
+
+    context 'when WEBrick throws an error' do
+
+      before do
+        WEBrick::HTTPServer.should_receive(:new).and_throw(Exception)
+      end
+
+      it 'should log the error' do
+        logger.should_receive(:error)
+        subject.start
+      end
+
+    end
+
   end
-    
+
 end
