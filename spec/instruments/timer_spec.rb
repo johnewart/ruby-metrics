@@ -9,7 +9,7 @@ describe Metrics::Instruments::Timer do
   
   context "An empty timer" do
     before(:each) do 
-      @timer = Metrics::Instruments::Timer.new()
+      @timer = Metrics::Instruments::Timer.new
     end
     
     it "should have a max of zero" do
@@ -56,7 +56,7 @@ describe Metrics::Instruments::Timer do
   
   context "Timing some events" do
     before(:each) do
-      @timer = Metrics::Instruments::Timer.new(:milliseconds, :seconds)
+      @timer = Metrics::Instruments::Timer.new({:duration_unit => :milliseconds, :rate_unit => :seconds})
       @timer.update(10, :milliseconds)
       @timer.update(20, :milliseconds)
       @timer.update(20, :milliseconds)
@@ -91,23 +91,27 @@ describe Metrics::Instruments::Timer do
     it "should contain the series added" do
       @timer.values.sort.should == [10, 20, 20, 30, 40]
     end
+    
+    it "should accurately represent itself using JSON" do
+      @timer.to_s.should == "{\"count\":5,\"rates\":{\"one_minute_rate\":0.0,\"five_minute_rate\":0.0,\"fifteen_minute_rate\":0.0,\"unit\":\"seconds\"},\"durations\":{\"min\":10.0,\"max\":40.0,\"mean\":24.0,\"percentiles\":{\"0.25\":20.0,\"0.5\":20.0,\"0.75\":30.0,\"0.95\":38.0,\"0.97\":38.8,\"0.98\":39.2,\"0.99\":39.6},\"unit\":\"milliseconds\"}}"
+    end
   end
   
   context "Timing blocks of code" do
     before(:each) do
-      @timer = Metrics::Instruments::Timer.new(:nanoseconds, :nanoseconds)
+      @timer = Metrics::Instruments::Timer.new({:duration_unit => :nanoseconds, :rate_unit => :nanoseconds})
     end
     
     it "should return the result of the block passed" do       
       result = @timer.time do 
-        sleep(5)
+        sleep(0.25)
         "narf"
       end
 
       result.should == "narf"
       
-      @timer.max.should >= 5.0
-      @timer.max.should <= 6.0
+      @timer.max.should >= 250000000
+      @timer.max.should <= 300000000
 
     end
   end

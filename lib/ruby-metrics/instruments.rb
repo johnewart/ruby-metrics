@@ -24,7 +24,8 @@ module Metrics
       :meter                  => Meter,
       :gauge                  => Gauge,
       :exponential_histogram  => ExponentialHistogram,
-      :uniform_histogram      => UniformHistogram
+      :uniform_histogram      => UniformHistogram,
+      :timer                  => Timer
     }
     
     def self.register(type, name, &block)

@@ -1,6 +1,10 @@
+require File.join(File.dirname(__FILE__), '..', 'time_units')
+
 module Metrics
   module Instruments
     class Meter < Base
+      include Metrics::TimeConversion 
+      
       # From http://www.teamquest.com/pdfs/whitepaper/ldavg2.pdf
       INTERVAL = 5.0
       INTERVAL_IN_NS = 5000000000.0
@@ -39,8 +43,8 @@ module Metrics
       end
       
       def calc_rate(rate, factor, count)
-        rate = rate + (factor * (count - rate))
-        rate
+        rate = rate.to_f + (factor.to_f * (count.to_f - rate.to_f))
+        rate.to_f
       end
       
       def tick
@@ -59,15 +63,15 @@ module Metrics
       end
       
       def one_minute_rate(rate_unit = :seconds)
-        scale_to_ns @one_minute_rate, rate_unit
+        convert_to_ns @one_minute_rate, rate_unit
       end
       
       def five_minute_rate(rate_unit = :seconds)
-        scale_to_ns @five_minute_rate, rate_unit
+        convert_to_ns @five_minute_rate, rate_unit
       end
       
       def fifteen_minute_rate(rate_unit = :seconds)
-        scale_to_ns @fifteen_minute_rate, rate_unit
+        convert_to_ns @fifteen_minute_rate, rate_unit
       end
       
       def mean_rate(rate_unit = seconds)
@@ -76,7 +80,7 @@ module Metrics
           return 0.0;
         else
           elapsed = Time.now.to_f - @start_time.to_f
-          scale_to_ns (count / elapsed), rate_unit
+          convert_to_ns (count.to_f / elapsed.to_f), rate_unit
         end
       end
       
@@ -88,23 +92,6 @@ module Metrics
         }.to_json
       end
       
-      private
-      def scale_to_ns(value, unit)
-        mult = case unit
-        when :seconds
-          Seconds.to_nsec
-        when :minutes
-          Minutes.to_nsec
-        when :hours
-          Hours.to_nsec
-        when :days
-          Days.to_nsec
-        when :weeks
-          Weeks.to_nsec
-        end
-
-        value * mult
-      end
     end
   end
 end
