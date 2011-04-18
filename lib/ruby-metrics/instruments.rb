@@ -41,7 +41,7 @@ module Metrics
     end
     
     def self.to_json
-      @instruments.to_json 
+      registered.to_json 
     end
 
     module Instrumentation
