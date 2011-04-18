@@ -36,8 +36,8 @@ module Metrics
       @instruments
     end
 
-    def self.instruments
-      @types.keys
+    def self.types
+      @types
     end
     
     def self.to_json
@@ -46,7 +46,7 @@ module Metrics
 
     module Instrumentation
 
-      Metrics::Instruments.instruments.each do |instrument|
+      Metrics::Instruments.types.each do |instrument, klass|
 
         define_method(instrument) do |name, &block|
           Metrics::Instruments.register(instrument, name, &block)
