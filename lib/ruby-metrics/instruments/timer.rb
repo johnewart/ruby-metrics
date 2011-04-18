@@ -5,14 +5,16 @@ module Metrics
     class Timer < Base
       include Metrics::TimeConversion 
       
-      attr_reader :duration_unit, :rate_unit
+      attr_accessor :duration_unit, :rate_unit
       
-      def initialize(options = {})
+      def initialize
         @meter          = Meter.new
         @histogram      = ExponentialHistogram.new
 
-        @duration_unit  = options[:duration_unit] || :seconds
-        @rate_unit      = options[:rate_unit] || :seconds
+        yield self if block_given?
+
+        @duration_unit ||= :seconds
+        @rate_unit     ||= :seconds
         
         clear
       end

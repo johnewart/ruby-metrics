@@ -56,7 +56,10 @@ describe Metrics::Instruments::Timer do
   
   context "Timing some events" do
     before(:each) do
-      @timer = Metrics::Instruments::Timer.new({:duration_unit => :milliseconds, :rate_unit => :seconds})
+      @timer = Metrics::Instruments::Timer.new do |t|
+        t.duration_unit = :milliseconds 
+        t.rate_unit = :seconds
+      end
       @timer.update(10, :milliseconds)
       @timer.update(20, :milliseconds)
       @timer.update(20, :milliseconds)
@@ -99,7 +102,10 @@ describe Metrics::Instruments::Timer do
   
   context "Timing blocks of code" do
     before(:each) do
-      @timer = Metrics::Instruments::Timer.new({:duration_unit => :nanoseconds, :rate_unit => :nanoseconds})
+      @timer = Metrics::Instruments::Timer.new do |t|
+        t.duration_unit = :nanoseconds 
+        t.rate_unit = :nanoseconds
+      end
     end
     
     it "should return the result of the block passed" do       

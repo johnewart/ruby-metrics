@@ -10,7 +10,10 @@ timer.update(500,   :milliseconds)
 timer.update(5,     :seconds)
 timer.update(4242,  :nanoseconds)
 
-msec_timer = @metrics.timer :msec_timer, {:duration_unit => :microseconds, :rate_unit => :seconds}
+msec_timer = @metrics.timer :msec_timer do |t| 
+  t.duration_unit = :microseconds
+  t.rate_unit = :seconds
+end
 
 step = 0
 
