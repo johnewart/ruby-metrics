@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'ruby-units'
 
 describe Metrics::Instruments::Meter do
   before(:each) do
@@ -19,23 +18,22 @@ describe Metrics::Instruments::Meter do
     meter = Metrics::Instruments::Meter.new
     meter.mark(500)
     meter.counted.should == 500
-    meter.uncounted.should == 500
   end
   
   it "should accept options for the constructor" do
-    meter = Metrics::Instruments::Meter.new({:interval => "10 seconds", :rateunit => "5 seconds"})
+    meter = Metrics::Instruments::Meter.new
   end
   
   context "A timer with an initial mark of 3 at a 1 second rate unit on a 5 second interval" do
     
     before(:each) do 
-      @meter = Metrics::Instruments::Meter.new({:interval => "5 seconds", :rateunit => "1 second"})
+      @meter = Metrics::Instruments::Meter.new
       @meter.mark(3)
       @meter.tick()
     end
 
     def tick_for(time)
-      count = ((time.to("seconds")) / 5).scalar
+      count = ((time.to_seconds) / 5).to_i
       (1..count).each do
         @meter.tick()
       end
@@ -47,7 +45,7 @@ describe Metrics::Instruments::Meter do
       end
     
       it "should have a rate of 0.22072766470286553 events/sec after 1 minute" do
-        tick_for("1 minute")
+        tick_for(1.minute)
         @meter.one_minute_rate.should == 0.22072766470286553
       end
     end
@@ -58,7 +56,7 @@ describe Metrics::Instruments::Meter do
       end
     
       it "should have a rate of 0.49123845184678905 events/sec after 1 minute" do
-        tick_for("1 minute")
+        tick_for(1.minute)
         @meter.five_minute_rate.should == 0.49123845184678905
       end
     end
@@ -67,9 +65,17 @@ describe Metrics::Instruments::Meter do
       it "should have a rate of 0.6 events/sec after the first tick" do
         @meter.fifteen_minute_rate.should == 0.6
       end
+      
+      it "should have a rate of 36.0 events per minute after the first tick" do
+        @meter.fifteen_minute_rate(:minutes).should == 36.0
+      end
+      
+      it "should have a rate of 2160.0 events per hour after the first tick" do 
+        @meter.fifteen_minute_rate(:hours).should == 2160.0
+      end
 
       it "should have a rate of 0.5613041910189706 events/sec after 1 minute" do
-        tick_for("1 minute")
+        tick_for(1.minute)
         @meter.fifteen_minute_rate.should == 0.5613041910189706
       end      
     end

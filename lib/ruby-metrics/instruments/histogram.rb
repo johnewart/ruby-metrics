@@ -145,6 +145,10 @@ module Metrics
         end
       end
       
+      def values
+        @sample.values
+      end
+      
       def to_s
         {
           :min => self.min, 
@@ -154,7 +158,7 @@ module Metrics
           :percentiles => self.quantiles([0.25, 0.50, 0.75, 0.95, 0.97, 0.98, 0.99])
         }.to_json
       end
-      
+    
     end
   
     class ExponentialHistogram < Histogram

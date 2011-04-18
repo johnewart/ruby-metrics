@@ -1,3 +1,5 @@
+require File.join(File.dirname(__FILE__), 'time_units')
+
 require File.join(File.dirname(__FILE__), 'statistics', 'sample')
 require File.join(File.dirname(__FILE__), 'statistics', 'uniform_sample')
 require File.join(File.dirname(__FILE__), 'statistics', 'exponential_sample')
@@ -7,6 +9,7 @@ require File.join(File.dirname(__FILE__), 'instruments', 'counter')
 require File.join(File.dirname(__FILE__), 'instruments', 'meter')
 require File.join(File.dirname(__FILE__), 'instruments', 'gauge')
 require File.join(File.dirname(__FILE__), 'instruments', 'histogram')
+require File.join(File.dirname(__FILE__), 'instruments', 'timer')
 
 
 require 'json'

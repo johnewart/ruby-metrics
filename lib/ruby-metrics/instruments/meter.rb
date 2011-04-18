@@ -1,5 +1,3 @@
-require 'ruby-units'
-
 module Metrics
   module Instruments
     class Meter < Base
@@ -10,31 +8,17 @@ module Metrics
       FIVE_MINUTE_FACTOR    = 1 - Math.exp(-INTERVAL / (60.0 * 5.0))
       FIFTEEN_MINUTE_FACTOR = 1 - Math.exp(-INTERVAL / (60.0 * 15.0))
       
-      attr_reader :counted, :uncounted
+      attr_reader :count
+      alias_method :counted, :count
       
       def initialize(options = {})
         @one_minute_rate = @five_minute_rate = @fifteen_minute_rate = 0.0
-        @counted = @uncounted = 0
+        @count  = 0
         @initialized = false
-        
-        if options[:interval]
-          interval = options[:interval]
-        else
-          interval = "5 seconds"
-        end
-        
-        if options[:rateunit]
-          @rateunit = options[:rateunit]
-        else
-          @rateunit = interval
-        end
-        
-        # HACK: this is here because ruby-units thinks 1s in ns is 999,999,999.9999999 not 1bn 
-        # TODO: either fix ruby-units, or remove it?
-        @ratemultiplier = @rateunit.to("nanoseconds").scalar.ceil
-        
+        @start_time = Time.now.to_f
+                        
         @timer_thread = Thread.new do
-          sleep_time = interval.to("seconds").scalar
+          sleep_time = INTERVAL
           begin
             loop do
               self.tick
@@ -51,8 +35,7 @@ module Metrics
       end
       
       def mark(count = 1)
-        @uncounted += count
-        @counted += count
+        @count += count
       end
       
       def calc_rate(rate, factor, count)
@@ -61,7 +44,7 @@ module Metrics
       end
       
       def tick
-        count = @uncounted.to_f  / INTERVAL_IN_NS.to_f
+        count = @count.to_f  / Seconds.to_nsec(INTERVAL).to_f
 
         if (@initialized)
           @one_minute_rate      = calc_rate(@one_minute_rate,     ONE_MINUTE_FACTOR,     count)
@@ -72,19 +55,29 @@ module Metrics
           @initialized = true
         end
         
-        @uncounted = 0
+        @count = 0
       end
       
-      def one_minute_rate
-        @one_minute_rate * @ratemultiplier
+      def one_minute_rate(rate_unit = :seconds)
+        scale_to_ns @one_minute_rate, rate_unit
       end
       
-      def five_minute_rate
-        @five_minute_rate * @ratemultiplier
+      def five_minute_rate(rate_unit = :seconds)
+        scale_to_ns @five_minute_rate, rate_unit
       end
       
-      def fifteen_minute_rate
-        @fifteen_minute_rate * @ratemultiplier
+      def fifteen_minute_rate(rate_unit = :seconds)
+        scale_to_ns @fifteen_minute_rate, rate_unit
+      end
+      
+      def mean_rate(rate_unit = seconds)
+        count = @count
+        if count == 0
+          return 0.0;
+        else
+          elapsed = Time.now.to_f - @start_time.to_f
+          scale_to_ns (count / elapsed), rate_unit
+        end
       end
       
       def to_s
@@ -93,6 +86,24 @@ module Metrics
           :five_minute_rate => self.five_minute_rate,
           :fifteen_minute_rate => self.fifteen_minute_rate
         }.to_json
+      end
+      
+      private
+      def scale_to_ns(value, unit)
+        mult = case unit
+        when :seconds
+          Seconds.to_nsec
+        when :minutes
+          Minutes.to_nsec
+        when :hours
+          Hours.to_nsec
+        when :days
+          Days.to_nsec
+        when :weeks
+          Weeks.to_nsec
+        end
+
+        value * mult
       end
     end
   end
