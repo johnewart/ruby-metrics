@@ -70,7 +70,7 @@ describe Metrics::Agent do
     WEBrick::HTTPServer.should_receive(:new).and_return mock_server
     mock_server.should_receive(:mount)
     mock_server.should_receive(:start)
-    @agent.start
+    subject.start
   end
     
 end
