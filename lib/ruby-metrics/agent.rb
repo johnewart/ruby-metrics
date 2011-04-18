@@ -27,7 +27,7 @@ module Metrics
     include Logging
     include Instruments::Instrumentation
     
-    attr_reader :instruments
+    attr_reader :instruments, :port
     
     def initialize(port = 8001)
       logger.debug "Initializing Metrics..."
