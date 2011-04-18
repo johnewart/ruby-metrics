@@ -7,12 +7,12 @@ module Metrics
       
       attr_reader :duration_unit, :rate_unit
       
-      def initialize(duration_unit = :seconds, rate_unit = :seconds)
+      def initialize(options = {})
         @meter          = Meter.new
         @histogram      = ExponentialHistogram.new
 
-        @duration_unit  = duration_unit
-        @rate_unit      = rate_unit
+        @duration_unit  = options[:duration_unit] || :seconds
+        @rate_unit      = options[:rate_unit] || :seconds
         
         clear
       end
@@ -30,7 +30,8 @@ module Metrics
         start_time = Time.now.to_f
         result = block.call
         time_diff = Time.now.to_f - start_time
-        update_timer(time_diff)
+        time_in_ns = convert_to_ns time_diff, :seconds        
+        update_timer(time_in_ns)
         result
       end
       
@@ -97,9 +98,28 @@ module Metrics
         end
       end
       
+      def to_s
+        {
+          :count => self.count,
+          :rates => {
+            :one_minute_rate => self.one_minute_rate,
+            :five_minute_rate => self.five_minute_rate,
+            :fifteen_minute_rate => self.fifteen_minute_rate, 
+            :unit => @rate_unit
+          },
+          :durations => { 
+            :min => self.min,
+            :max => self.max,
+            :mean => self.mean,
+            :percentiles => self.quantiles([0.25, 0.50, 0.75, 0.95, 0.97, 0.98, 0.99]),
+            :unit => @duration_unit
+          }
+        }.to_json
+      end
+      
       private
       def scale_duration_to_ns(value, unit)
-        value / convert_to_ns(1, unit)
+        value.to_f / convert_to_ns(1, unit).to_f
       end
       
     end

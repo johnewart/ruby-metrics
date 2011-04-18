@@ -23,8 +23,13 @@ module Metrics
       :meter                  => Meter,
       :gauge                  => Gauge,
       :exponential_histogram  => ExponentialHistogram,
-      :uniform_histogram      => UniformHistogram
+      :uniform_histogram      => UniformHistogram,
+      :timer                  => Timer
     }
+    
+    def self.register_with_options(type, name, options = {})
+      @instruments[name] = @types[type].new(options)
+    end
     
     def self.register(type, name, &block)
       @instruments[name] = @types[type].new(&block)
@@ -48,6 +53,10 @@ module Metrics
         Metrics::Instruments.register(type, name, &block)
       end
       
+      def register_with_options(type, name, options)
+        Metrics::Instruments.register_with_options(type, name, options)
+      end
+      
       def counter(name)
         register(:counter, name)
       end
@@ -60,6 +69,10 @@ module Metrics
         register(:gauge, name, &block)
       end
       
+      def timer(name, options = {})
+        register_with_options(:timer, name, options)
+      end      
+
       def uniform_histogram(name)
         register(:uniform_histogram, name)
       end
