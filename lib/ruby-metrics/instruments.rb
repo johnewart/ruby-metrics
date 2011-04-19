@@ -10,6 +10,7 @@ require File.join(File.dirname(__FILE__), 'instruments', 'meter')
 require File.join(File.dirname(__FILE__), 'instruments', 'gauge')
 require File.join(File.dirname(__FILE__), 'instruments', 'histogram')
 require File.join(File.dirname(__FILE__), 'instruments', 'timer')
+require File.join(File.dirname(__FILE__), 'instruments', 'calibration')
 
 
 require 'json'
