@@ -4,17 +4,18 @@ module Metrics
   module Instruments
     class Timer < Base
       include Metrics::TimeConversion 
-      
-      attr_accessor :duration_unit, :rate_unit
+
+      attr_reader :calibration
       
       def initialize
-        @meter          = Meter.new
-        @histogram      = ExponentialHistogram.new
+        @calibration = Calibration.new
 
-        yield self if block_given?
+        yield calibration if block_given?
 
-        @duration_unit ||= :seconds
-        @rate_unit     ||= :seconds
+        @meter = Meter.new do |m|
+          m.calibrate(calibration)
+        end
+        @histogram = ExponentialHistogram.new
         
         clear
       end
@@ -42,55 +43,51 @@ module Metrics
       end
 
       def fifteen_minute_rate
-        @meter.fifteen_minute_rate(@rate_unit)
+        @meter.fifteen_minute_rate
       end
 
       def five_minute_rate
-        @meter.five_minute_rate(@rate_unit)
+        @meter.five_minute_rate
       end
 
       def one_minute_rate
-        @meter.one_minute_rate(@rate_unit)
+        @meter.one_minute_rate
       end
       
       def mean_rate
-        @meter.mean_rate(@rate_unit)
+        @meter.mean_rate
       end
 
       def max
-        scale_duration_to_ns @histogram.max, @duration_unit
+        scale_duration_to_ns @histogram.max
       end
       
       def min
-        scale_duration_to_ns @histogram.min, @duration_unit
+        scale_duration_to_ns @histogram.min
       end
       
       def mean
-        scale_duration_to_ns @histogram.mean, @duration_unit
+        scale_duration_to_ns @histogram.mean
       end
       
       def std_dev
-        scale_duration_to_ns @histogram.std_dev, @duration_unit
+        scale_duration_to_ns @histogram.std_dev
       end
       
       def quantiles(percentiles = [0.99,0.97,0.95,0.75,0.5,0.25])
         result = {}
         
         @histogram.quantiles(percentiles).each do |k,v|
-          result[k] = scale_duration_to_ns v, @duration_unit
+          result[k] = (scale_duration_to_ns v)
         end
         
         result
       end
 
       def values
-        result = []
-
-        @histogram.values.each do |value|
-          result << (scale_duration_to_ns value, @duration_unit)
+        @histogram.values.inject([]) do |values, value|
+          values << (scale_duration_to_ns value)
         end
-        
-        result
       end
       
       def update_timer(duration)
@@ -107,21 +104,21 @@ module Metrics
             :one_minute_rate => self.one_minute_rate,
             :five_minute_rate => self.five_minute_rate,
             :fifteen_minute_rate => self.fifteen_minute_rate, 
-            :unit => @rate_unit
+            :unit => calibration.rate_unit
           },
           :durations => { 
             :min => self.min,
             :max => self.max,
             :mean => self.mean,
             :percentiles => self.quantiles([0.25, 0.50, 0.75, 0.95, 0.97, 0.98, 0.99]),
-            :unit => @duration_unit
+            :unit => calibration.duration_unit
           }
         }.to_json
       end
       
       private
-      def scale_duration_to_ns(value, unit)
-        value.to_f / convert_to_ns(1, unit).to_f
+      def scale_duration_to_ns(duration)
+        duration.to_f / convert_to_ns(1, calibration.duration_unit).to_f
       end
       
     end
