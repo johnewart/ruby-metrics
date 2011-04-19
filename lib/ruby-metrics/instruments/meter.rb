@@ -12,10 +12,14 @@ module Metrics
       FIVE_MINUTE_FACTOR    = 1 - Math.exp(-INTERVAL / (60.0 * 5.0))
       FIFTEEN_MINUTE_FACTOR = 1 - Math.exp(-INTERVAL / (60.0 * 15.0))
       
-      attr_reader :count
+      attr_reader :count, :calibration
       alias_method :counted, :count
       
-      def initialize(options = {})
+      def initialize
+        @calibration = Calibration.new
+
+        yield calibration if block_given?
+
         @one_minute_rate = @five_minute_rate = @fifteen_minute_rate = 0.0
         @count  = 0
         @initialized = false
@@ -62,25 +66,29 @@ module Metrics
         @count = 0
       end
       
-      def one_minute_rate(rate_unit = :seconds)
-        convert_to_ns @one_minute_rate, rate_unit
+      def one_minute_rate(rate_unit = nil)
+        unit = rate_unit || calibration.rate_unit
+        convert_to_ns @one_minute_rate, unit 
       end
       
-      def five_minute_rate(rate_unit = :seconds)
-        convert_to_ns @five_minute_rate, rate_unit
+      def five_minute_rate(rate_unit = nil)
+        unit = rate_unit || calibration.rate_unit
+        convert_to_ns @five_minute_rate, unit
       end
       
-      def fifteen_minute_rate(rate_unit = :seconds)
-        convert_to_ns @fifteen_minute_rate, rate_unit
+      def fifteen_minute_rate(rate_unit = nil)
+        unit = rate_unit || calibration.rate_unit
+        convert_to_ns @fifteen_minute_rate, unit
       end
       
-      def mean_rate(rate_unit = seconds)
+      def mean_rate(rate_unit = nil)
+        unit = rate_unit || calibration.rate_unit
         count = @count
         if count == 0
           return 0.0;
         else
           elapsed = Time.now.to_f - @start_time.to_f
-          convert_to_ns (count.to_f / elapsed.to_f), rate_unit
+          convert_to_ns (count.to_f / elapsed.to_f), unit
         end
       end
       
