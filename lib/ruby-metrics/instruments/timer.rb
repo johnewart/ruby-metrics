@@ -8,7 +8,7 @@ module Metrics
       attr_reader :calibration
       
       def initialize
-        @calibration = Calibration.new
+        @calibration = Calibration.new(:seconds)
 
         yield calibration if block_given?
 

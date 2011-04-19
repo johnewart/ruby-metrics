@@ -2,10 +2,16 @@ require 'spec_helper'
 
 describe Metrics::Instruments::Calibration do
 
+  subject { Metrics::Instruments::Calibration.new(:units) }
+
   describe '#new' do
 
-    its(:duration_unit) { should equal(:seconds) }
-    its(:rate_unit)     { should equal(:seconds) }
+    context 'given a unit :units' do
+
+      its(:duration_unit) { should equal(:units) }
+      its(:rate_unit)     { should equal(:units) }
+
+    end
 
   end
 
@@ -13,7 +19,7 @@ describe Metrics::Instruments::Calibration do
 
     context 'given another calibration' do
 
-      let(:calibration) { Metrics::Instruments::Calibration.new }
+      let(:calibration) { Metrics::Instruments::Calibration.new(:units) }
 
       before(:all) do
         calibration.duration_unit = :fake_units
@@ -23,13 +29,13 @@ describe Metrics::Instruments::Calibration do
       it "sets its duration unit to the given calibration's duration unit" do
         expect {
           subject.calibrate(calibration)
-        }.to change(subject, :duration_unit).from(:seconds).to(:fake_units)
+        }.to change(subject, :duration_unit).to(:fake_units)
       end
 
       it "sets its rate unit to the given calibration's rate unit" do
         expect {
           subject.calibrate(calibration)
-        }.to change(subject, :rate_unit).from(:seconds).to(:fake_units)
+        }.to change(subject, :rate_unit).to(:fake_units)
       end
 
     end

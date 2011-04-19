@@ -4,8 +4,8 @@ module Metrics
 
       attr_accessor :duration_unit, :rate_unit
 
-      def initialize
-        @duration_unit = @rate_unit = :seconds
+      def initialize(units)
+        @duration_unit = @rate_unit = units
       end
 
       def calibrate(calibration)

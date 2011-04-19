@@ -16,7 +16,7 @@ module Metrics
       alias_method :counted, :count
       
       def initialize
-        @calibration = Calibration.new
+        @calibration = Calibration.new(:seconds)
 
         yield calibration if block_given?
 
