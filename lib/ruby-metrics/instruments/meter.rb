@@ -74,7 +74,7 @@ module Metrics
         convert_to_ns @fifteen_minute_rate, rate_unit
       end
       
-      def mean_rate(rate_unit = seconds)
+      def mean_rate(rate_unit = :seconds)
         count = @count
         if count == 0
           return 0.0;
