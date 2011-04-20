@@ -10,6 +10,7 @@ require File.join(File.dirname(__FILE__), 'instruments', 'meter')
 require File.join(File.dirname(__FILE__), 'instruments', 'gauge')
 require File.join(File.dirname(__FILE__), 'instruments', 'histogram')
 require File.join(File.dirname(__FILE__), 'instruments', 'timer')
+require File.join(File.dirname(__FILE__), 'instruments', 'static')
 
 
 require 'json'
@@ -24,7 +25,8 @@ module Metrics
       :gauge                  => Gauge,
       :exponential_histogram  => ExponentialHistogram,
       :uniform_histogram      => UniformHistogram,
-      :timer                  => Timer
+      :timer                  => Timer,
+      :static                 => Static
     }
     
     def self.register_with_options(type, name, options = {})
@@ -82,6 +84,10 @@ module Metrics
       
       def exponential_histogram(name)
         register(:exponential_histogram, name)
+      end
+
+      def static(name)
+        register(:static, name)
       end
     end
     

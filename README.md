@@ -16,6 +16,7 @@ Right now, I have:
 * Gauges
 * Histograms w/ uniform sampling
 * Histograms w/ exponentially decaying sampling
+* Static (storing static data)
  
 Upcoming:
 
