@@ -166,13 +166,16 @@ module Metrics
         super(:exponential)
       end
     end
-  
+
+    register_instrument(:exponential_histogram, ExponentialHistogram)
+
     class UniformHistogram < Histogram
       def initialize
         super(:uniform)
       end
     end
-    
+
+    register_instrument(:uniform_histogram, UniformHistogram)
   end
   
 end

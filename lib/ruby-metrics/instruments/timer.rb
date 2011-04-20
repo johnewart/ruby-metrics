@@ -123,6 +123,8 @@ module Metrics
       end
       
     end
+
+    register_instrument(:timer, Timer)
   end
 end  
       

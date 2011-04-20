@@ -93,5 +93,7 @@ module Metrics
       end
       
     end
+
+    register_instrument(:meter, Meter)
   end
 end
