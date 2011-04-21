@@ -20,3 +20,4 @@ Quantity::Unit.add_unit :week,    :time, 604800000, :weeks
 
 
 require File.join(File.dirname(__FILE__), 'ruby-metrics', 'agent')
+require File.join(File.dirname(__FILE__), 'ruby-metrics', 'console_reporter')

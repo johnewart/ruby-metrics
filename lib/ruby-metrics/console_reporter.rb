@@ -31,20 +31,7 @@ module Metrics
             (80-start_time_str.length-1).times { @out.print('=') }
             @out.puts
             
-            @instruments.registered.each do |name, metric|
-              @out.puts "Name: #{name}, Type: #{metric.class.to_s.gsub(/.+::/, "")}"
-              if metric.instance_of? Instruments::Gauge
-                print_gauge metric
-              elsif metric.instance_of? Instruments::Counter
-                print_counter metric
-              elsif metric.is_a? Instruments::Histogram
-                print_histogram metric
-              elsif metric.instance_of? Instruments::Meter
-                print_metered metric
-              elsif metric.instance_of? Instruments::Timer
-                print_timer metric
-              end
-            end
+            print_instruments
             
             @out.puts
             @out.flush
@@ -54,6 +41,23 @@ module Metrics
           logger.error "Error in worker thread: #{e.class.name}: #{e}\n  #{e.backtrace.join("\n  ")}"
         end # begin
       end # thread new
+    end
+    
+    def print_instruments
+      @instruments.registered.each do |name, metric|
+        @out.puts "Name: #{name}, Type: #{metric.class.to_s.gsub(/.+::/, "")}"
+        if metric.is_a? Instruments::Gauge
+          print_gauge(metric)
+        elsif metric.is_a? Instruments::Counter
+          print_counter(metric)
+        elsif metric.is_a? Instruments::Histogram
+          print_histogram(metric)
+        elsif metric.is_a? Instruments::Meter
+          print_metered(metric)
+        elsif metric.is_a? Instruments::Timer
+          print_timer(metric)
+        end
+      end
     end
     
     def print_gauge(gauge)
@@ -85,7 +89,6 @@ module Metrics
     
     def print_timer(timer)
       print_metered(timer);
-      
       percentiles = timer.quantiles([0.5, 0.75, 0.95, 0.98, 0.99, 0.999]);
       @out.puts("               min = #{timer.min}")
       @out.puts("               max = #{timer.max}") 
