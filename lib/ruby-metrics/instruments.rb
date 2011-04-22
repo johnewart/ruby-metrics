@@ -4,13 +4,7 @@ require File.join(File.dirname(__FILE__), 'statistics', 'sample')
 require File.join(File.dirname(__FILE__), 'statistics', 'uniform_sample')
 require File.join(File.dirname(__FILE__), 'statistics', 'exponential_sample')
 
-require File.join(File.dirname(__FILE__), 'instruments', 'base')
-require File.join(File.dirname(__FILE__), 'instruments', 'counter')
-require File.join(File.dirname(__FILE__), 'instruments', 'meter')
-require File.join(File.dirname(__FILE__), 'instruments', 'gauge')
-require File.join(File.dirname(__FILE__), 'instruments', 'histogram')
-require File.join(File.dirname(__FILE__), 'instruments', 'timer')
-
+Dir[File.join(File.dirname(__FILE__), 'instruments', '*.rb')].each {|file| require file}
 
 require 'json'
 
@@ -24,7 +18,8 @@ module Metrics
       :gauge                  => Gauge,
       :exponential_histogram  => ExponentialHistogram,
       :uniform_histogram      => UniformHistogram,
-      :timer                  => Timer
+      :timer                  => Timer,
+      :heartbeat              => Heartbeat
     }
     
     def self.register_with_options(type, name, options = {})
