@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), 'logging')
 require File.join(File.dirname(__FILE__), 'instruments')
+require File.join(File.dirname(__FILE__), 'integration')
 require 'webrick'
 
 class Status < WEBrick::HTTPServlet::AbstractServlet
