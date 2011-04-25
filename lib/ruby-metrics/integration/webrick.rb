@@ -1,3 +1,5 @@
+require File.join(File.dirname(__FILE__), '..', '..', 'ruby-metrics')
+
 require 'webrick'
 
 module Metrics
