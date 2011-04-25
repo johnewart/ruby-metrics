@@ -1,9 +1,8 @@
 require 'rubygems'
-require '../lib/ruby-metrics'
+require '../lib/ruby-metrics/integration/webrick'
 
-# Specify a port for the agent
-@metrics = Metrics::Agent.new(8081)
-@metrics.start
+@metrics = Metrics::Agent.new
+@metrics.start :port => 8081 # optional
 
 timer = @metrics.timer :my_timer
 timer.update(500,   :milliseconds)
@@ -15,7 +14,7 @@ msec_timer = @metrics.timer :msec_timer, {:duration_unit => :microseconds, :rate
 step = 0
 
 # This is here so that we will run indefinitely so you can hit the 
-# status page on localhost:8081/status
+# status page on localhost:8081/stats
 loop do
   sleep 1
   

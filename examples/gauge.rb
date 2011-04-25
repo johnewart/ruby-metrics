@@ -2,7 +2,6 @@ require 'rubygems'
 require '../lib/ruby-metrics'
 
 @metrics = Metrics::Agent.new
-@metrics.start
 
 hit_count = 42
 http_requests = 53
