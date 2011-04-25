@@ -14,7 +14,11 @@ module Metrics
     def self.register_instrument(type, klass)
       @types[type] = klass
     end
-    
+
+    def self.registered_instruments
+      @types
+    end
+
     def self.register_with_options(type, name, options = {})
       @instruments[name] = @types[type].new(options)
     end
