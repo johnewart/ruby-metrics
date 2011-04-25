@@ -11,6 +11,9 @@ GEM
     diff-lcs (1.1.2)
     json (1.5.1)
     quantity (0.1.1)
+    rack (1.2.2)
+    rack-test (0.5.7)
+      rack (>= 1.0)
     rspec (2.5.0)
       rspec-core (~> 2.5.0)
       rspec-expectations (~> 2.5.0)
@@ -27,6 +30,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  rack-test
   rspec
   ruby-metrics!
   simplecov (>= 0.3.8)
