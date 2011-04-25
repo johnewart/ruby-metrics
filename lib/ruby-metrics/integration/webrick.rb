@@ -1,6 +1,13 @@
 require 'webrick'
 
 module Metrics
+  
+  class Agent
+    def start(options = {})
+      Integration::WEBrick.start(options.merge(:agent => self))
+    end
+  end
+  
   module Integration
     class WEBrick < ::WEBrick::HTTPServlet::AbstractServlet
       include Logging

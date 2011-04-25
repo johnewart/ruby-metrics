@@ -45,16 +45,4 @@ describe Metrics::Agent do
     @agent.meter(:test_meter).should == @meter
   end
   
-  it "should start the WEBrick daemon" do
-    Thread.stub!(:new).and_return do |block|
-      block.call
-    end
-    
-    mock_server = mock(WEBrick::HTTPServer)
-    WEBrick::HTTPServer.should_receive(:new).and_return mock_server
-    mock_server.should_receive(:mount)
-    mock_server.should_receive(:start)
-    @agent.start
-  end
-    
 end
