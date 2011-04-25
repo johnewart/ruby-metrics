@@ -35,6 +35,10 @@ module Metrics
       @port = port
     end
     
+    def to_json
+      @instruments.to_json
+    end
+    
     def start
       start_daemon_thread
     end
