@@ -4,29 +4,21 @@ require File.join(File.dirname(__FILE__), 'statistics', 'sample')
 require File.join(File.dirname(__FILE__), 'statistics', 'uniform_sample')
 require File.join(File.dirname(__FILE__), 'statistics', 'exponential_sample')
 
-require File.join(File.dirname(__FILE__), 'instruments', 'base')
-require File.join(File.dirname(__FILE__), 'instruments', 'counter')
-require File.join(File.dirname(__FILE__), 'instruments', 'meter')
-require File.join(File.dirname(__FILE__), 'instruments', 'gauge')
-require File.join(File.dirname(__FILE__), 'instruments', 'histogram')
-require File.join(File.dirname(__FILE__), 'instruments', 'timer')
-
-
 require 'json'
 
 module Metrics
   module Instruments
     @instruments = {}
-    
-    @types = {
-      :counter                => Counter,
-      :meter                  => Meter,
-      :gauge                  => Gauge,
-      :exponential_histogram  => ExponentialHistogram,
-      :uniform_histogram      => UniformHistogram,
-      :timer                  => Timer
-    }
-    
+    @types = {}
+
+    def self.register_instrument(type, klass)
+      @types[type] = klass
+    end
+
+    def self.registered_instruments
+      @types
+    end
+
     def self.register_with_options(type, name, options = {})
       @instruments[name] = @types[type].new(options)
     end
@@ -87,3 +79,11 @@ module Metrics
     
   end
 end
+
+require File.join(File.dirname(__FILE__), 'instruments', 'base')
+require File.join(File.dirname(__FILE__), 'instruments', 'counter')
+require File.join(File.dirname(__FILE__), 'instruments', 'meter')
+require File.join(File.dirname(__FILE__), 'instruments', 'gauge')
+require File.join(File.dirname(__FILE__), 'instruments', 'histogram')
+require File.join(File.dirname(__FILE__), 'instruments', 'timer')
+

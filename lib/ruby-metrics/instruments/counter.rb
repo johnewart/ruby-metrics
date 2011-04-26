@@ -29,5 +29,7 @@ module Metrics
       end
       
     end
+
+    register_instrument(:counter, Counter)
   end
 end
