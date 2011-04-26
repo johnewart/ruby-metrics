@@ -2,7 +2,6 @@ require 'rubygems'
 require '../lib/ruby-metrics'
 
 @metrics = Metrics::Agent.new
-@metrics.start
 
 counter = @metrics.counter :my_counter
 counter.incr

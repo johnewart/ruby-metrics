@@ -1,5 +1,5 @@
 require 'rubygems'
-require '../lib/ruby-metrics'
+require '../lib/ruby-metrics/integration/webrick'
 
 @metrics = Metrics::Agent.new
 @metrics.start
@@ -16,7 +16,7 @@ end
 step = 0
 
 # This is here so that we will run indefinitely so you can hit the 
-# status page on localhost:8001/status
+# status page on localhost:8001/stats
 loop do
   sleep 1
   
