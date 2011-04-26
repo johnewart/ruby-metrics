@@ -16,5 +16,7 @@ module Metrics
       end
       
     end
+
+    register_instrument(:gauge, Gauge)
   end
 end

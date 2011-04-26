@@ -58,5 +58,19 @@ describe Metrics::Instruments do
     proc = Proc.new { "result" }
     @instruments.register :gauge, :test_gauge, &proc
   end
-    
+
+  context '#register_instrument' do
+    it 'registers a new instrument' do
+      lambda { Metrics::Instruments.register_instrument(:test, String) }.should_not raise_error
+    end
+
+    it 'returns the list of registered instruments' do
+      Metrics::Instruments.register_instrument(:str, String)
+      Metrics::Instruments.register_instrument(:int, Fixnum)
+
+      inst = Metrics::Instruments.registered_instruments
+      inst[:str].should == String
+      inst[:int].should == Fixnum
+    end
+  end
 end
