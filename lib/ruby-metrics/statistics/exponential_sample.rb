@@ -7,7 +7,7 @@ module Metrics
         @count  = 0
         @size   = size
         @alpha  = alpha
-        @rescale_window = 1.hour.to_seconds.to_i
+        @rescale_window = 3600  #seconds -- 1 hour
         self.clear
       end
       

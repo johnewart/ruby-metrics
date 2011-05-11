@@ -32,8 +32,8 @@ describe Metrics::Instruments::Meter do
       @meter.tick()
     end
 
-    def tick_for(time)
-      count = ((time.to_seconds) / 5).to_i
+    def tick_for(seconds)
+      count = ((seconds) / 5).to_i
       (1..count).each do
         @meter.tick()
       end
@@ -45,7 +45,7 @@ describe Metrics::Instruments::Meter do
       end
     
       it "should have a rate of 0.22072766470286553 events/sec after 1 minute" do
-        tick_for(1.minute)
+        tick_for(60)
         @meter.one_minute_rate.should == 0.22072766470286553
       end
     end
@@ -56,7 +56,7 @@ describe Metrics::Instruments::Meter do
       end
     
       it "should have a rate of 0.49123845184678905 events/sec after 1 minute" do
-        tick_for(1.minute)
+        tick_for(60)
         @meter.five_minute_rate.should == 0.49123845184678905
       end
     end
@@ -75,7 +75,7 @@ describe Metrics::Instruments::Meter do
       end
 
       it "should have a rate of 0.5613041910189706 events/sec after 1 minute" do
-        tick_for(1.minute)
+        tick_for(60)
         @meter.fifteen_minute_rate.should == 0.5613041910189706
       end      
     end

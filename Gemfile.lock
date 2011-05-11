@@ -3,14 +3,12 @@ PATH
   specs:
     ruby-metrics (0.8.0)
       json
-      quantity
 
 GEM
   remote: http://rubygems.org/
   specs:
     diff-lcs (1.1.2)
     json (1.5.1)
-    quantity (0.1.1)
     rack (1.2.2)
     rack-test (0.5.7)
       rack (>= 1.0)

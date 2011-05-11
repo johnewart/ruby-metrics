@@ -15,7 +15,6 @@ Gem::Specification.new do |s|
   s.rubyforge_project = "ruby-metrics"
 
   s.add_dependency "json"
-  s.add_dependency "quantity"
 
   s.add_development_dependency "rspec"
   s.add_development_dependency "simplecov", [">= 0.3.8"] #, :require => false
