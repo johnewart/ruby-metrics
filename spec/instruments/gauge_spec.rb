@@ -27,18 +27,16 @@ describe Metrics::Instruments::Gauge do
     @gauge.get[:result].should == 43
   end
   
-  it "should JSONify the results when you call to_s" do
-    result = 42
-    
-    callback = Proc.new do 
-      {
-        :result => result
-      }
+  context "to_json" do
+    it "should serialize the current value" do
+      result = 0
+      gauge = Metrics::Instruments::Gauge.new{ result }
+      
+      gauge.to_json.should == result.to_s
+      
+      result = 2
+      gauge.to_json.should == result.to_s
     end
-    
-    @gauge = Metrics::Instruments::Gauge.new &callback
-    
-    @gauge.to_s.should == "{\"result\":42}"
   end
   
 end

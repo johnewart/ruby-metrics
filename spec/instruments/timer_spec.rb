@@ -92,9 +92,6 @@ describe Metrics::Instruments::Timer do
       @timer.values.sort.should == [10, 20, 20, 30, 40]
     end
     
-    it "should accurately represent itself using JSON" do
-      @timer.to_s.should == "{\"count\":5,\"rates\":{\"one_minute_rate\":0.0,\"five_minute_rate\":0.0,\"fifteen_minute_rate\":0.0,\"unit\":\"seconds\"},\"durations\":{\"min\":10.0,\"max\":40.0,\"mean\":24.0,\"percentiles\":{\"0.25\":20.0,\"0.5\":20.0,\"0.75\":30.0,\"0.95\":38.0,\"0.97\":38.8,\"0.98\":39.2,\"0.99\":39.6},\"unit\":\"milliseconds\"}}"
-    end
   end
   
   context "Timing blocks of code" do
@@ -114,6 +111,36 @@ describe Metrics::Instruments::Timer do
       @timer.max.should <= 300000000
 
     end
+  end
+  
+  context "to_json" do
+    before(:each) do
+      @timer  = Metrics::Instruments::Timer.new
+      @hash   = JSON.parse(@timer.to_json)
+    end
+    
+    it "should serialize with the count value" do
+      @hash["count"].should_not be_nil
+    end
+    
+    %w( one_minute_rate five_minute_rate fifteen_minute_rate ).each do |rate|
+      it "should serialize with the #{rate} rate" do
+        @hash["rates"][rate].should_not be_nil
+      end
+    end
+    
+    %w( min max mean ).each do |duration|
+      it "should serialize with the #{duration} duration" do
+        @hash["durations"][duration].should_not be_nil
+      end
+    end
+    
+    %w( 0.25 0.5 0.75 0.95 0.97 0.98 0.99 ).each do |percentile|
+      it "should serialize with the #{percentile} duration percentile" do
+        @hash["durations"]["percentiles"][percentile].should_not be_nil
+      end
+    end
+    
   end
   
 end

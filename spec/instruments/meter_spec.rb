@@ -81,6 +81,19 @@ describe Metrics::Instruments::Meter do
     end
   
   end
+  
+  context "to_json" do
+    before(:each) do
+      @meter  = Metrics::Instruments::Meter.new
+      @hash   = JSON.parse(@meter.to_json)
+    end
     
+    %w( one_minute_rate five_minute_rate fifteen_minute_rate ).each do |attr|
+      it "should serialize with the #{attr} value" do
+        @hash[attr].should_not be_nil
+      end
+    end
+    
+  end
   
 end

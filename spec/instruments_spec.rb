@@ -45,7 +45,7 @@ describe Metrics::Instruments do
     @instruments.register(:meter, :test_meter).should == @meter
     @instruments.registered.should == {:test_meter => @meter}
     
-    @instruments.to_json.should == "{\"test_meter\":\"{\\\"one_minute_rate\\\":0.0,\\\"five_minute_rate\\\":0.0,\\\"fifteen_minute_rate\\\":0.0}\"}"
+    @instruments.to_json.should == %({"test_meter":{"one_minute_rate":0.0,"five_minute_rate":0.0,"fifteen_minute_rate":0.0}})
   end
   
   it "should not allow for creating a gauge with no block" do 
