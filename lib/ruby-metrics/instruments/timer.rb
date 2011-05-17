@@ -98,7 +98,7 @@ module Metrics
         end
       end
       
-      def to_s
+      def to_json(*_)
         {
           :count => self.count,
           :rates => {

@@ -36,7 +36,7 @@ module Metrics
     end
     
     def self.to_json
-      @instruments.to_json 
+      @instruments.to_json
     end
     
     module TypeMethods
