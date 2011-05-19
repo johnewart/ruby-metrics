@@ -69,4 +69,11 @@ describe Metrics::Instruments::Counter do
     end.should change{ @counter.to_i }.by(-1)
   end
   
+  context "to_json" do
+    let(:json) { @counter.to_json }
+    it "should serialize to its current value" do
+      json.should == @counter.to_s
+    end
+  end
+  
 end

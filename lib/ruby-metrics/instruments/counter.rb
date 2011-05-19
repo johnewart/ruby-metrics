@@ -24,7 +24,7 @@ module Metrics
         @value.to_i
       end
       
-      def to_s
+      def to_json(*_)
         @value.to_s
       end
       

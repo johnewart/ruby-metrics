@@ -39,10 +39,6 @@ describe Metrics::Instruments::Histogram do
       @histogram.mean.should == 3.4877830882352936
     end
   
-    it "should accurately represent itself using JSON" do
-      @histogram.to_s.should == "{\"min\":1.6,\"max\":5.1,\"mean\":3.4877830882352936,\"variance\":1.3027283328494685,\"percentiles\":{\"0.25\":2.16275,\"0.5\":4.0,\"0.75\":4.45425,\"0.95\":4.817,\"0.97\":4.8977900000000005,\"0.98\":4.933,\"0.99\":5.009570000000001}}"
-    end
-  
     it "should return correct values for mean, std. deviation and variance when no elements are in the histogram" do
       histogram = Metrics::Instruments::Histogram.new
       histogram.variance.should == 0.0
@@ -94,6 +90,26 @@ describe Metrics::Instruments::Histogram do
       histogram.mean.should == 0.0
       histogram.std_dev.should == 0.0
     end
+  end
+  
+  context "to_json" do
+    before(:each) do
+      @histogram  = Metrics::Instruments::Histogram.new
+      @hash       = JSON.parse(@histogram.to_json)
+    end
+    
+    %w( min max mean variance ).each do |attr|
+      it "should serialize with the #{attr} value" do
+        @hash[attr].should_not be_nil
+      end
+    end
+    
+    %w( 0.25 0.5 0.75 0.95 0.97 0.98 0.99 ).each do |percentile|
+      it "should have the #{percentile} percentile" do
+        @hash["percentiles"][percentile].should_not be_nil
+      end
+    end
+    
   end
   
 end

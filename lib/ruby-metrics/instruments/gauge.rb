@@ -11,7 +11,7 @@ module Metrics
         instance_exec(&@block)
       end
       
-      def to_s
+      def to_json(*_)
         get.to_json
       end
       

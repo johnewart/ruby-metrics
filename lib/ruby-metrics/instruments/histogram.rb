@@ -149,7 +149,7 @@ module Metrics
         @sample.values
       end
       
-      def to_s
+      def to_json(*_)
         {
           :min => self.min, 
           :max => self.max,

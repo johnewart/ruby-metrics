@@ -84,7 +84,7 @@ module Metrics
         end
       end
       
-      def to_s
+      def to_json(*_)
         {
           :one_minute_rate => self.one_minute_rate,
           :five_minute_rate => self.five_minute_rate,
