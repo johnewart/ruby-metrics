@@ -1,3 +1,4 @@
+<img src="https://github.com/johnewart/ruby-metrics/raw/master/logo.gif" alt="Ruby Metrics" /><br />
 
 ## What is this?
 
