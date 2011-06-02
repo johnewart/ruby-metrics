@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-metrics (0.8.5)
+    ruby-metrics (0.8.6)
       json
 
 GEM
