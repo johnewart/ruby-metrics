@@ -6,8 +6,12 @@ module Metrics
         raise NotImplementedError
       end
       
-      def to_json(*_)
+      def as_json(*_)
         raise NotImplementedError
+      end
+      
+      def to_json(*_)
+        self.as_json.to_json
       end
       
       def to_s

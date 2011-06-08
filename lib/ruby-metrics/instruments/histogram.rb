@@ -149,14 +149,14 @@ module Metrics
         @sample.values
       end
       
-      def to_json(*_)
+      def as_json(*_)
         {
           :min => self.min, 
           :max => self.max,
           :mean => self.mean, 
           :variance => self.variance, 
           :percentiles => self.quantiles([0.25, 0.50, 0.75, 0.95, 0.97, 0.98, 0.99])
-        }.to_json
+        }
       end
     
     end

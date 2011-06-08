@@ -24,10 +24,10 @@ module Metrics
         @value.to_i
       end
       
-      def to_json(*_)
-        @value.to_s
+      def as_json(*_)
+        @value
       end
-      
+
     end
 
     register_instrument(:counter, Counter)
