@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "simplecov", [">= 0.3.8"] #, :require => false
   s.add_development_dependency "rack-test"
   s.add_development_dependency "activesupport"
+  s.add_development_dependency "i18n"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
