@@ -7,6 +7,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
+    activesupport (3.0.8)
     diff-lcs (1.1.2)
     json (1.5.1)
     rack (1.2.2)
@@ -28,6 +29,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport
   rack-test
   rspec
   ruby-metrics!
