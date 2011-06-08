@@ -40,12 +40,20 @@ describe Metrics::Instruments do
   end
 
   
-  it "should generate JSON correctly" do 
+  it "should generate JSON for a Meter correctly" do 
     Metrics::Instruments::Meter.stub!(:new).and_return @meter
     @instruments.register(:meter, :test_meter).should == @meter
     @instruments.registered.should == {:test_meter => @meter}
     
     @instruments.to_json.should == %({"test_meter":{"one_minute_rate":0.0,"five_minute_rate":0.0,"fifteen_minute_rate":0.0}})
+  end
+  
+  it "should generate JSON for a Counter correctly" do 
+    Metrics::Instruments::Counter.stub!(:new).and_return @counter
+    @instruments.register(:counter, :test_counter).should == @counter
+    @instruments.registered.should == {:test_counter => @counter}
+    
+    @instruments.to_json.should == %({"test_counter":0})
   end
   
   it "should not allow for creating a gauge with no block" do 

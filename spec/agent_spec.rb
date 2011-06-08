@@ -44,5 +44,20 @@ describe Metrics::Agent do
 
     @agent.meter(:test_meter).should == @meter
   end
+
+  it "should add a timer instrument correctly" do
+    @meter = Metrics::Instruments::Timer.new
+    Metrics::Instruments::Timer.stub!(:new).and_return @timer
+
+    @agent.timer(:test_timer).should == @timer
+  end
+
+  it "should serialize a timer instrument correctly" do
+    @agent.timer(:test_timer)
+    @hash = JSON.parse(@agent.to_json)
+    @hash["test_timer"].should_not be_nil
+    @hash["test_timer"]["count"].should_not be_nil
+    @hash["test_timer"]["count"].should == 0
+  end
   
 end

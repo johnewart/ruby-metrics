@@ -81,7 +81,21 @@ describe Metrics::Integration::Rack::Middleware do
           end.should change{ app.status_codes[status / 100].to_i }.by(1)
         end
       end
-      
+
+      it "should build timer JSON properly" do
+        agent_h = JSON.parse(agent.to_json)
+        agent_h["_requests"].should_not be_nil
+        agent_h["_requests"]["count"].should == app.requests.count
+      end
+
+      it "should serve timer JSON properly" do
+        get "/stats"
+        agent_j = last_response.body
+        h = JSON.parse(agent_j)
+        h["_requests"].should_not be_nil
+        h["_requests"]["count"].should == app.requests.count
+      end
+
     end
     
     context "configuring" do
