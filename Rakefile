@@ -16,4 +16,12 @@ RSpec::Core::RakeTask.new do |t|
   t.pattern = 'spec/**/*_spec.rb'
 end
 
+namespace :spec do
+  RSpec::Core::RakeTask.new do |t|
+    t.name = :activesupport
+    t.rspec_opts = ["-c", "-f progress", "-r ./spec/spec_helper.rb -r active_support -r active_support/json"]
+    t.pattern = 'spec/**/*_spec.rb'
+  end
+end
+
 task :default => :spec
