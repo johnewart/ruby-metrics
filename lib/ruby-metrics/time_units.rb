@@ -55,7 +55,7 @@ module Metrics
           :hours                  => Hours
       }
       
-      return units[unit].to_nsec * value
+      units[unit].to_nsec * value
     end
   end
 end

@@ -1,7 +1,6 @@
 module Metrics
   module Statistics
-    class ExponentialSample < Sample
-      
+    class ExponentialSample
       def initialize(size = 1028, alpha = 0.015)
         @values = Hash.new
         @count  = 0
@@ -23,7 +22,7 @@ module Metrics
       end
       
       def tick
-        return Time.now.to_f
+        Time.now.to_f
       end
       
       def update(value)
@@ -85,7 +84,7 @@ module Metrics
           result << @values[key]
         end
         
-        return result
+        result
       end
     end
   end

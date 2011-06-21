@@ -7,7 +7,7 @@ SimpleCov.start do
   merge_timeout 3600
 end
 
-$:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+$:.unshift(File.expand_path('../../lib', __FILE__))
 require 'ruby-metrics'
 
 Metrics.logger = Logger.new(STDERR)
