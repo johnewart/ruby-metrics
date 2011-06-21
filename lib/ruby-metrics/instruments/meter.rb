@@ -1,8 +1,8 @@
-require File.join(File.dirname(__FILE__), '..', 'time_units')
+require 'ruby-metrics/time_units'
 
 module Metrics
   module Instruments
-    class Meter < Base
+    class Meter
       include Metrics::TimeConversion 
       
       # From http://www.teamquest.com/pdfs/whitepaper/ldavg2.pdf
@@ -22,11 +22,10 @@ module Metrics
         @start_time = Time.now.to_f
                         
         @timer_thread = Thread.new do
-          sleep_time = INTERVAL
           begin
             loop do
               self.tick
-              sleep(sleep_time)
+              sleep(INTERVAL)
             end
           rescue Exception => e
             logger.error "Error in timer thread: #{e.class.name}: #{e}\n  #{e.backtrace.join("\n  ")}"
@@ -84,16 +83,17 @@ module Metrics
         end
       end
       
-      def to_json(*_)
+      def as_json(*_)
         {
           :one_minute_rate => self.one_minute_rate,
           :five_minute_rate => self.five_minute_rate,
           :fifteen_minute_rate => self.fifteen_minute_rate
-        }.to_json
+        }
       end
       
+      def to_json(*_)
+        as_json.to_json
+      end
     end
-
-    register_instrument(:meter, Meter)
   end
 end
