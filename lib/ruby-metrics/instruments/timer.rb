@@ -23,7 +23,7 @@ module Metrics
 
       def update(duration, unit)
         mult = convert_to_ns(1, unit)
-        self.update_timer (duration * mult)
+        self.update_timer(duration * mult)
       end
 
       def time(&block) 
