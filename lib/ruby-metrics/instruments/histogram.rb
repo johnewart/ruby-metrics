@@ -1,6 +1,9 @@
+require 'ruby-metrics/statistics/uniform_sample'
+require 'ruby-metrics/statistics/exponential_sample'
+
 module Metrics
   module Instruments
-    class Histogram < Base
+    class Histogram
       
       def initialize(type = :uniform)
         @count = 0
@@ -149,16 +152,19 @@ module Metrics
         @sample.values
       end
       
-      def to_json(*_)
+      def as_json(*_)
         {
           :min => self.min, 
           :max => self.max,
           :mean => self.mean, 
           :variance => self.variance, 
           :percentiles => self.quantiles([0.25, 0.50, 0.75, 0.95, 0.97, 0.98, 0.99])
-        }.to_json
+        }
       end
-    
+
+      def to_json(*_)
+        as_json.to_json
+      end
     end
   
     class ExponentialHistogram < Histogram
@@ -167,15 +173,10 @@ module Metrics
       end
     end
 
-    register_instrument(:exponential_histogram, ExponentialHistogram)
-
     class UniformHistogram < Histogram
       def initialize
         super(:uniform)
       end
     end
-
-    register_instrument(:uniform_histogram, UniformHistogram)
   end
-  
 end

@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), '..', 'time_units')
 
 module Metrics
   module Instruments
-    class Timer < Base
+    class Timer
       include Metrics::TimeConversion 
       
       attr_reader :duration_unit, :rate_unit
@@ -98,7 +98,7 @@ module Metrics
         end
       end
       
-      def to_json(*_)
+      def as_json(*_)
         {
           :count => self.count,
           :rates => {
@@ -114,17 +114,18 @@ module Metrics
             :percentiles => self.quantiles([0.25, 0.50, 0.75, 0.95, 0.97, 0.98, 0.99]),
             :unit => @duration_unit
           }
-        }.to_json
+        }
+      end
+
+      def to_json(*_)
+        as_json.to_json
       end
       
       private
       def scale_duration_to_ns(value, unit)
         value.to_f / convert_to_ns(1, unit).to_f
       end
-      
     end
-
-    register_instrument(:timer, Timer)
   end
 end  
       

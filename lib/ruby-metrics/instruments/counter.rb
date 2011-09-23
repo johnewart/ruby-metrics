@@ -1,7 +1,6 @@
 module Metrics
   module Instruments
-    class Counter < Base
-      
+    class Counter
       def initialize
         @value = 0
       end
@@ -24,12 +23,17 @@ module Metrics
         @value.to_i
       end
       
-      def to_json(*_)
+      def to_s
         @value.to_s
       end
-      
-    end
 
-    register_instrument(:counter, Counter)
+      def as_json(*_)
+        @value
+      end
+      
+      def to_json(*_)
+        as_json.to_json
+      end
+    end
   end
 end
