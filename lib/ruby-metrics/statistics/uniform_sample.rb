@@ -1,7 +1,6 @@
 module Metrics
   module Statistics
-    class UniformSample < Sample
-      
+    class UniformSample
       def initialize(size = 1028)
         @values = Array.new(size)
         @count = 0

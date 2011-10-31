@@ -1,5 +1,3 @@
-require 'logger'
-
 module Metrics
   module Logging
     

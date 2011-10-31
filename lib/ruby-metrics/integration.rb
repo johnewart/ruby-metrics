@@ -1,12 +1,11 @@
 module Metrics
   module Integration
     
-    autoload :WEBrick, File.join(File.dirname(__FILE__), 'integration', 'webrick')
+    autoload :WEBrick, File.expand_path('../integration/webrick', __FILE__)
     
     module Rack
-      autoload :Middleware, File.join(File.dirname(__FILE__), 'integration', 'rack_middleware')
-      autoload :Endpoint,   File.join(File.dirname(__FILE__), 'integration', 'rack_endpoint')
+      autoload :Middleware, File.expand_path('../integration/rack_middleware', __FILE__)
+      autoload :Endpoint,   File.expand_path('../integration/rack_endpoint', __FILE__)
     end
-    
   end
 end
