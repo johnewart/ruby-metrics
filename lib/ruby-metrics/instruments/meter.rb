@@ -83,12 +83,16 @@ module Metrics
         end
       end
 
-      def to_json(*_)
+      def as_json(*_)
         {
           :one_minute_rate => self.one_minute_rate,
           :five_minute_rate => self.five_minute_rate,
           :fifteen_minute_rate => self.fifteen_minute_rate
-        }.to_json
+        }
+      end
+
+      def to_json(*_)
+        as_json.to_json
       end
     end
   end

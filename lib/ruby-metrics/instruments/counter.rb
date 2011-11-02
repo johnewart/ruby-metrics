@@ -27,8 +27,12 @@ module Metrics
         @value.to_s
       end
 
+      def as_json(*_)
+        @value
+      end
+
       def to_json(*_)
-        @value.to_json
+        as_json.to_json
       end
     end
   end

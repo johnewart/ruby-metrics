@@ -51,8 +51,12 @@ module Metrics
       @instruments[name] ||= Instruments::ExponentialHistogram.new
     end
 
-    def to_json
-      @instruments.to_json
+    def as_json(*_)
+      @instruments
+    end
+
+    def to_json(*_)
+      as_json.to_json
     end
   end
 end
