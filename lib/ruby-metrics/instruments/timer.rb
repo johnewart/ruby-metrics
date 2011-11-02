@@ -98,7 +98,7 @@ module Metrics
         end
       end
 
-      def to_json(*_)
+      def as_json(*_)
         {
           :count => count,
           :rates => {
@@ -114,7 +114,11 @@ module Metrics
             :percentiles => quantiles([0.25, 0.50, 0.75, 0.95, 0.97, 0.98, 0.99]),
             :unit => @duration_unit
           }
-        }.to_json
+        }
+      end
+
+      def to_json(*_)
+        as_json.to_json
       end
 
       private
