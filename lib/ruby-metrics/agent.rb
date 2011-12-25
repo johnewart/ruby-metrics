@@ -9,6 +9,7 @@ require 'ruby-metrics/instruments/histogram'
 require 'ruby-metrics/instruments/timer'
 
 require 'ruby-metrics/integration'
+require 'ruby-metrics/reporter'
 
 require 'json'
 
@@ -17,9 +18,11 @@ module Metrics
     include Logging
 
     attr_reader :instruments
+    attr_reader :reporters
 
     def initialize(options = {})
       @instruments = {}
+      @reporters = {}
     end
 
     alias_method :registered, :instruments
@@ -42,6 +45,10 @@ module Metrics
 
     def uniform_histogram(name)
       @instruments[name] ||= Instruments::UniformHistogram.new
+    end
+
+    def report_to(name, options = {})
+      @reporters[name] ||= Reporter.new({:agent => self}.merge(options))
     end
 
     # For backwards compatibility
