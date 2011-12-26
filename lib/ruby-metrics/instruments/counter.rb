@@ -1,7 +1,10 @@
 module Metrics
   module Instruments
     class Counter
-      def initialize
+
+      attr_reader :units
+
+      def initialize(options = {})
         @value = 0
       end
 

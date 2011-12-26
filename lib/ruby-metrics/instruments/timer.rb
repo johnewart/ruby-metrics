@@ -5,7 +5,7 @@ module Metrics
     class Timer
       include Metrics::TimeConversion
 
-      attr_reader :duration_unit, :rate_unit
+      attr_reader :duration_unit, :rate_unit, :units
 
       def initialize(options = {})
         @meter          = Meter.new
@@ -13,7 +13,8 @@ module Metrics
 
         @duration_unit  = options[:duration_unit] || :seconds
         @rate_unit      = options[:rate_unit] || :seconds
-
+        @units          = options[:units]
+        
         clear
       end
 

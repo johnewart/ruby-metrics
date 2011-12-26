@@ -9,9 +9,9 @@ describe Metrics::Agent do
   end
   
   it "should add a counter instrument correctly" do 
-    @counter = Metrics::Instruments::Counter.new
+    @counter = Metrics::Instruments::Counter.new(:units => "jobs")
     Metrics::Instruments::Counter.stub!(:new).and_return @counter
-    @agent.counter(:test_counter).should == @counter
+    @agent.counter(:test_counter, "jobs").should == @counter
   end
   
   it "should allow for creating a gauge with a block via #gauge" do 
@@ -39,10 +39,19 @@ describe Metrics::Agent do
   end
   
   it "should add a meter instrument correctly" do
-    @meter = Metrics::Instruments::Meter.new
+    @meter = Metrics::Instruments::Meter.new(:units => "hits/sec")
     Metrics::Instruments::Meter.stub!(:new).and_return @meter
 
-    @agent.meter(:test_meter).should == @meter
+    @agent.meter(:test_meter, "hits/sec").should == @meter
   end
+
+  it "should add a timer instrument correctly" do
+    @timer = Metrics::Instruments::Timer.new(:units => "reqs/sec")
+    Metrics::Instruments::Timer.stub!(:new).and_return @timer
+
+    timer = @agent.timer(:test_timer, "reqs/sec").should == @timer
+    @timer.units.should == "reqs/sec"
   
+  end
+
 end

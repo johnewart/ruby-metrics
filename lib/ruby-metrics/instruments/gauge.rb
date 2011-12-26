@@ -1,7 +1,9 @@
 module Metrics
   module Instruments
     class Gauge
-      def initialize(&block)
+      attr_reader :units
+
+      def initialize(options = {}, &block)
         raise ArgumentError, "a block is required" unless block_given?
         @block = block
       end

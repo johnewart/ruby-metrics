@@ -4,6 +4,7 @@ $:.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'ruby-metrics'
 require 'ruby-metrics/reporters/librato'
+require 'ruby-metrics/reporters/ganglia'
 
 @metrics = Metrics::Agent.new
 @hit_counter = 42
@@ -36,16 +37,13 @@ counter_two = @metrics.counter :counter_two
 counter_two.incr(0)
 =end 
 
-timer = @metrics.timer :request_timer
+timer = @metrics.timer :request_timer, "sec/req"
 puts "Result: #{result}"
-librato = Metrics::Reporters::Librato.new({:user => "john@johnewart.net", :api_token => "a43c007db9fd073ac1005629fa937664ae20d02c1f45443ea900073e804f7ee7"})
-
+#librato = Metrics::Reporters::Librato.new({:user => "john@johnewart.net", :api_token => "a43c007db9fd073ac1005629fa937664ae20d02c1f45443ea900073e804f7ee7"})
 
 Thread.new {
   while(true)
     begin
-      #counter.incr(sleeptime)
-      #counter_two.incr(sleeptime)
       puts "TIMER1: #{timer.inspect}"
       timer.time do 
         sleeptime = rand(10) + 2
@@ -61,4 +59,5 @@ Thread.new {
 }
 
 
-@metrics.report_to("librato", {:service => librato, :delay => 5})
+ganglia = Metrics::Reporters::GangliaReporter.new({:host_ip => "172.16.32.130", :host_port => 8670, :agent => @metrics})
+@metrics.report_to("ganglia", {:service => ganglia, :delay => 5})

@@ -13,6 +13,7 @@ module Metrics
       FIFTEEN_MINUTE_FACTOR = 1 - Math.exp(-INTERVAL / (60.0 * 15.0))
 
       attr_reader :count
+      attr_reader :units
       alias_method :counted, :count
 
       def initialize(options = {})
