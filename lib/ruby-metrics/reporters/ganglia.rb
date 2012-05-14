@@ -6,6 +6,7 @@ require 'gmetric'
 module Metrics
   module Reporters
     class GangliaReporter
+
       attr_reader :host_ip
       attr_reader :host_port
 
@@ -24,9 +25,9 @@ module Metrics
                     when "String"
                       "string"
                     else
-                      "whosawhatsa"
+                      "unknown"
                     end
-        puts "Datatype: #{data_type}"
+
         Ganglia::GMetric.send(@host_ip, @host_port.to_i, {
            :spoof => 0,
            :name => data[:name],
@@ -43,12 +44,12 @@ module Metrics
         agent.instruments.each do |name, instrument|
           nothing_to_do = false
           data =  { :name => name, :units => instrument.units }
-          case instrument.class.to_s
-            when "Metrics::Instruments::Counter"
+          case instrument
+            when Metrics::Instruments::Counter
               value = instrument.to_i
               data.merge! :value => value.to_i
               send_data data
-            when "Metrics::Instruments::Gauge"
+            when Metrics::Instruments::Gauge
               if instrument.get.is_a? Hash
                 instrument.get.each do |key, value|
                   data.merge! :name => "#{name}_#{key}", :value => value
@@ -58,10 +59,14 @@ module Metrics
                 data.merge! :value => instrument.get
                 send_data data
               end
-            when "Metrics::Instruments::Timer"
+            when Metrics::Instruments::Timer
               [:count, :fifteen_minute_rate, :five_minute_rate, :one_minute_rate, :min, :max, :mean].each do |attribute|
                 data.merge!(:name => "#{name}_#{attribute}", :value => instrument.send(attribute))
                 send_data data
+              end
+            when Metrics::Instruments::Meter
+              [:count, :fifteen_minute_rate, :five_minute_rate, :one_minute_rate, :mean_rate].each do |attribute|
+                data.merge!(:name => "#{name_attribute}", :value => instrument.send(attribute) )
               end
             else 
               puts "Unhandled instrument"
