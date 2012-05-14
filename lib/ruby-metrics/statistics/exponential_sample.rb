@@ -37,7 +37,7 @@ module Metrics
           @values[priority] = value
         else
           firstkey = @values.keys[0]
-          if (firstkey < priority)
+          if firstkey && (firstkey < priority)
             @values[priority] = value
             
             while(@values.delete(firstkey) == nil)
