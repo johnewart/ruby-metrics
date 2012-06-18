@@ -5,6 +5,7 @@ $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'ruby-metrics'
 require 'ruby-metrics/reporters/librato'
 require 'ruby-metrics/reporters/ganglia'
+require 'ruby-metrics/reporters/opentsdb'
 
 @metrics = Metrics::Agent.new
 @hit_counter = 42
@@ -59,5 +60,6 @@ Thread.new {
 }
 
 
-ganglia = Metrics::Reporters::GangliaReporter.new({:host_ip => "172.16.32.130", :host_port => 8670, :agent => @metrics})
-@metrics.report_to("ganglia", {:service => ganglia, :delay => 5})
+#ganglia = Metrics::Reporters::GangliaReporter.new({:host_ip => "172.16.32.130", :host_port => 8670, :agent => @metrics})
+opentsdb = Metrics::Reporters::OpenTSDBReporter.new({:hostname => 'localhost', :port => 4242, :agent => @metrics })
+@metrics.report_to("opentsdb", {:service => opentsdb, :delay => 5})
