@@ -43,7 +43,7 @@ module Metrics
     end
 
     def uniform_histogram(name, units = "")
-      @instruments[name] ||= Instruments::UniformHistogram.new(:units => units)
+      @instruments[name] ||= Instruments::UniformHistogram.new
     end
 
     # For backwards compatibility
