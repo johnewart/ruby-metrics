@@ -1,14 +1,24 @@
 require "rubygems"
 require "bundler"
 require "rspec/core/rake_task"
-Bundler::GemHelper.install_tasks
 
-begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
-  exit e.status_code
+desc 'Build gem into the pkg directory'
+task :build do
+  FileUtils.rm_rf('pkg')
+  Dir['*.gemspec'].each do |gemspec|
+    puts "Building #{gemspec}"
+    system "gem build #{gemspec}"
+  end
+  FileUtils.mkdir_p('pkg')
+  FileUtils.mv(Dir['*.gem'], 'pkg')
+end
+
+desc 'Tags version, pushes to remote, and pushes gem'
+task :release => :build do
+  sh 'git', 'tag', '-m', changelog, "v#{Qu::VERSION}"
+  sh "git push origin master"
+  sh "git push origin v#{Qu::VERSION}"
+  sh "ls pkg/*.gem | xargs -n 1 gem push"
 end
 
 RSpec::Core::RakeTask.new do |t|

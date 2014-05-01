@@ -1,11 +1,12 @@
-require 'ruby-metrics/version'
 require 'ruby-metrics'
-
+require 'ruby-metrics/logging'
 require 'opentsdb'
 
 module Metrics
   module Reporters
     class OpenTSDBReporter
+
+      include Logging
 
       attr_reader :hostname
       attr_reader :port
@@ -26,7 +27,7 @@ module Metrics
           :value => data[:value],
           :tags => data[:tags].merge(@tags)
         }
-        puts "Sending #{tsdb_data}"
+        logger.debug "Sending #{tsdb_data}"
         @client.put(tsdb_data)
       end
 
@@ -60,7 +61,7 @@ module Metrics
                 data.merge!(:name => "#{name}.#{attribute}", :value => instrument.send(attribute) )
               end
             else 
-              puts "Unhandled instrument"
+              logger.error "Unhandled instrument"
           end
         end
       end

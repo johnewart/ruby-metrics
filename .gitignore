@@ -2,3 +2,5 @@ coverage
 *.gem
 pkg/*
 .DS_Store
+doc
+.yardoc
