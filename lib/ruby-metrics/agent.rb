@@ -17,7 +17,7 @@ module Metrics
   class Agent
     include Logging
 
-    attr_reader :instruments, :reporters
+    attr_reader :instruments, :reporters, :reporter
 
     def initialize(options = {})
       @instruments = {}
@@ -26,35 +26,45 @@ module Metrics
 
     alias_method :registered, :instruments
 
-    def counter(name, units = "")
+    def counter(name, units = '')
       @instruments[name] ||= Instruments::Counter.new(:units => units)
     end
 
-    def meter(name, units = "")
+    def meter(name, units = '')
       @instruments[name] ||= Instruments::Meter.new(:units => units)
     end
 
-    def gauge(name, units = "", &block)
+    def gauge(name, units = '', &block)
       @instruments[name] ||= Instruments::Gauge.new(:units => units, &block)
     end
 
-    def timer(name, units = "", options = {})
+    def timer(name, units = '', options = {})
       @instruments[name] ||= Instruments::Timer.new(options.merge(:units => units))
     end
 
-    def uniform_histogram(name, units = "")
-      @instruments[name] ||= Instruments::UniformHistogram.new(:units => units)
+    def uniform_histogram(name)
+      @instruments[name] ||= Instruments::UniformHistogram.new
     end
 
     # For backwards compatibility
     alias_method :histogram, :uniform_histogram
 
-    def exponential_histogram(name, units = "")
+    def exponential_histogram(name)
       @instruments[name] ||= Instruments::ExponentialHistogram.new
     end
 
-    def report_to(name, options = {})
-      @reporters[name] ||= Reporter.new({:agent => self}.merge(options))
+    def report_to(name, service)
+      @reporters[name] ||= service
+    end
+
+    def send_metrics!
+      @reporters.each do |name, service|
+        service.report(self)
+      end
+    end
+
+    def report_periodically(delay = nil)
+      @reporter = Reporter.new({:agent => self, :delay => delay}.merge(options))
     end
 
     def as_json(*_)

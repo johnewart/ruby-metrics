@@ -11,17 +11,14 @@ module Metrics
         raise "Need an agent to report data from"
       end
 
-      if options[:service] == nil
-        raise "Need a service to report to"
-      end
-
       delay = options[:delay] || DEFAULT_REPORTING_DELAY
       agent = options[:agent] 
-      service = options[:service]
 
       Thread.new {
         while(true)
-          service.report(agent)
+          agent.reporters.each do |name, service|
+            service.report(agent)
+          end
           sleep delay
         end
       }.join

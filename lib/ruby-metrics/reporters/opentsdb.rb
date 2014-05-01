@@ -25,16 +25,16 @@ module Metrics
           :metric => data[:name],
           :timestamp => Time.now.to_i,
           :value => data[:value],
-          :tags => data[:tags].merge(@tags)
+          :tags => data[:tags].merge(@tags).delete_if { |k, v| v == nil }
         }
-        logger.debug "Sending #{tsdb_data}"
+        if tsdb_data[:tags] == {}
+          tsdb_data[:tags] = {:units => 'none'}
+        end
         @client.put(tsdb_data)
       end
 
       def report(agent)
-
         agent.instruments.each do |name, instrument|
-          nothing_to_do = false
           data =  { :name => name, :tags => { :units => instrument.units } }
           case instrument
             when Metrics::Instruments::Counter
