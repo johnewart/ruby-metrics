@@ -83,4 +83,4 @@ mount Metrics::Integration::Rack::Endpoint.new(:agent => @agent)
 
 ## License
 
-Copyright 2011 John Ewart <john@johnewart.net>. Released under the MIT license. See the file LICENSE for further details.
+Copyright 2011-2014 John Ewart <john@johnewart.net>. Released under the MIT license. See the file LICENSE for further details.
