@@ -17,51 +17,57 @@ module Metrics
         @hostname = options[:hostname]
         @port = options[:port] 
         @client = OpenTSDB::Client.new({:hostname => @hostname, :port => @port})
-        @tags = options[:tags] || {}
+        @tags = options[:tags] || {:units => 'none'}
       end
 
-      def send_data(data)
+      def send_data(name, value, units = nil)
         tsdb_data = {
-          :metric => data[:name],
+          :metric => name,
           :timestamp => Time.now.to_i,
-          :value => data[:value],
-          :tags => data[:tags].merge(@tags).delete_if { |k, v| v == nil }
+          :value => value,
+          :tags => @tags
         }
-        if tsdb_data[:tags] == {}
-          tsdb_data[:tags] = {:units => 'none'}
+
+        if units
+          tsdb_data[:tags][:units] = units
         end
+
         @client.put(tsdb_data)
       end
 
       def report(agent)
-        agent.instruments.each do |name, instrument|
-          data =  { :name => name, :tags => { :units => instrument.units } }
+        agent.instruments.clone.each do |name, instrument|
           case instrument
             when Metrics::Instruments::Counter
               value = instrument.to_i
-              data.merge! :value => value.to_i
-              send_data data
+              send_data name, value
             when Metrics::Instruments::Gauge
               if instrument.get.is_a? Hash
                 instrument.get.each do |key, value|
-                  data.merge! :name => "#{name}.#{key}", :value => value
-                  send_data data
+                  send_data "#{name}.#{key}", value
                 end
               else 
-                data.merge! :value => instrument.get
-                send_data data
+                send_data name, instrument.get, instrument.units
               end
             when Metrics::Instruments::Timer
-              [:count, :fifteen_minute_rate, :five_minute_rate, :one_minute_rate, :min, :max, :mean].each do |attribute|
-                data.merge!(:name => "#{name}.#{attribute}", :value => instrument.send(attribute))
-                send_data data
+              rate_units = "sec/#{instrument.units}"
+              time_units = "#{instrument.units}/sec"
+              send_data "#{name}.count", instrument.count, instrument.units
+              [:fifteen_minute_rate, :five_minute_rate, :one_minute_rate].each do |attribute|
+                send_data "#{name}.#{attribute}", instrument.send(attribute), rate_units
+              end
+
+              [:min, :max, :mean].each do |attribute|
+                send_data "#{name}.#{attribute}", instrument.send(attribute), time_units
               end
             when Metrics::Instruments::Meter
-              [:count, :fifteen_minute_rate, :five_minute_rate, :one_minute_rate, :mean_rate].each do |attribute|
-                data.merge!(:name => "#{name}.#{attribute}", :value => instrument.send(attribute) )
+              rate_units = "#{instrument.units}/sec"
+              send_data "#{name}.count", instrument.count, instrument.units
+              [:fifteen_minute_rate, :five_minute_rate, :one_minute_rate, :mean_rate].each do |attribute|
+                send_data "#{name}.#{attribute}", instrument.send(attribute), rate_units
               end
-            else 
-              logger.error "Unhandled instrument"
+            else
+              puts 'Unhandled instrument'
           end
         end
       end

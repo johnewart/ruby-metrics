@@ -3,8 +3,6 @@ require 'rubygems'
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'ruby-metrics'
-require 'ruby-metrics/reporters/librato'
-require 'ruby-metrics/reporters/ganglia'
 require 'ruby-metrics/reporters/opentsdb'
 
 @metrics = Metrics::Agent.new
@@ -26,6 +24,9 @@ gauge = @metrics.gauge :my_gauge do
   }
 end
 
+step = 0
+meter = @metrics.meter :faults, 'faults'
+
 puts "Gauge: #{gauge.to_s}"
 
 result = gauge.get
@@ -36,8 +37,23 @@ counter.incr(50)
 counter_two = @metrics.counter :counter_two
 counter_two.incr(0)
 
-timer = @metrics.timer :request_timer, 'sec/req'
+timer = @metrics.timer :request_timer, 'requests'
 puts "Result: #{result}"
+
+Thread.new {
+  begin
+    modifier = rand(200).to_i
+    step += 1
+
+    if (step % 2)
+      modifier *= -1
+    end
+
+    meter.mark(500  + modifier)
+    puts "Sleeping for 0.53s --> #{meter.count}"
+    sleep 0.53
+  end while(true)
+}
 
 Thread.new {
   while(true)
@@ -58,4 +74,4 @@ Thread.new {
 
 opentsdb = Metrics::Reporters::OpenTSDBReporter.new({:hostname => 'localhost', :port => 4242, :agent => @metrics })
 @metrics.report_to('opentsdb', opentsdb)
-@metrics.report_periodically(5)
+@metrics.report_periodically(3.26)

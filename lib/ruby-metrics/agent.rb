@@ -64,7 +64,7 @@ module Metrics
     end
 
     def report_periodically(delay = nil)
-      @reporter = Reporter.new({:agent => self, :delay => delay}.merge(options))
+      @reporter = Reporter.new({:agent => self, :delay => delay})
     end
 
     def as_json(*_)

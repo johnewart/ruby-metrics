@@ -81,7 +81,7 @@ describe Metrics::Instruments::Timer do
     end
 
     it "should accurately calculate the standard deviation of the durations" do
-      @timer.std_dev.should == 11.401754901476078
+      @timer.std_dev.should == 11.40175425099138
     end
     
     it "should accurately calculate percentiles" do 

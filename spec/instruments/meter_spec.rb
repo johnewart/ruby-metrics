@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'timecop'
 
 describe Metrics::Instruments::Meter do
   before(:each) do
@@ -26,10 +27,16 @@ describe Metrics::Instruments::Meter do
   
   context "A timer with an initial mark of 3 at a 1 second rate unit on a 5 second interval" do
     
-    before(:each) do 
+    before(:each) do
+      @start_time = Time.local(2014, 1, 1, 12, 0, 0)
+      Timecop.freeze(@start_time)
       @meter = Metrics::Instruments::Meter.new
       @meter.mark(3)
       @meter.tick()
+    end
+
+    after(:each) do
+      Timecop.return
     end
 
     def tick_for(seconds)
@@ -38,12 +45,42 @@ describe Metrics::Instruments::Meter do
         @meter.tick()
       end
     end
-    
+
+    context 'When computing mean rate' do
+      it 'should have a mean rate of 3/sec one second in' do
+        @meter.mark(3)
+        Timecop.freeze(Time.now + 1) do
+          @meter.mean_rate.should == 3
+        end
+      end
+
+      it 'should have a mean rate of 0.003/msec one second in' do
+        @meter.mark(3)
+        Timecop.freeze(Time.now + 1) do
+          @meter.mean_rate(:milliseconds).should == 0.003
+        end
+      end
+
+      it 'should have a rate of 180/minute one second in' do
+        @meter.mark(3)
+        Timecop.freeze(Time.now + 1) do
+          @meter.mean_rate(:minutes).should == 180
+        end
+      end
+
+      it 'should have a rate of 10800/hour one second in' do
+        @meter.mark(3)
+        Timecop.freeze(Time.now + 1) do
+          @meter.mean_rate(:hours).should == 10800
+        end
+      end
+    end
+
     context "For a 1 minute window" do
       it "should have a rate of 0.6 events/sec after the first tick" do
         @meter.one_minute_rate.should == 0.6
       end
-    
+
       it "should have a rate of 0.22072766470286553 events/sec after 1 minute" do
         tick_for(60)
         @meter.one_minute_rate.should == 0.22072766470286553

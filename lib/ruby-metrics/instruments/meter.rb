@@ -21,6 +21,7 @@ module Metrics
         @count  = 0
         @initialized = false
         @start_time = Time.now.to_f
+        @units = "#{options[:units]}"
 
         @timer_thread = Thread.new do
           begin
@@ -77,10 +78,11 @@ module Metrics
       def mean_rate(rate_unit = :seconds)
         count = @count
         if count == 0
-          return 0.0;
+          return 0.0
         else
           elapsed = Time.now.to_f - @start_time.to_f
-          convert_to_ns (count.to_f / elapsed.to_f), rate_unit
+          mult = scale_time_units(:seconds, rate_unit)
+          count.to_f / (mult * elapsed.to_f)
         end
       end
 

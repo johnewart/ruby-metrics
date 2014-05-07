@@ -6,6 +6,7 @@ module Metrics
       def initialize(options = {}, &block)
         raise ArgumentError, "a block is required" unless block_given?
         @block = block
+        @units = options[:units]
       end
 
       def get
