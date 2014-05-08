@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{A reporter that uses Librato to stash metric data}
   s.license     = 'MIT'
 
-  s.files         = ['lib/ruby-metrics/reporters/opentsdb.rb']
+  s.files         = ['lib/ruby-metrics/reporters/librato.rb']
   s.require_paths = ['lib']
 
   s.add_dependency 'ruby-metrics', Metrics::VERSION

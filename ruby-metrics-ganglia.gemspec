@@ -13,9 +13,9 @@ Gem::Specification.new do |s|
   s.description = %q{A reporter that uses Ganglia's to stash metric data}
   s.license     = 'MIT'
 
-  s.files         = ['lib/ruby-metrics/reporters/opentsdb.rb']
+  s.files         = ['lib/ruby-metrics/reporters/ganglia.rb']
   s.require_paths = ['lib']
 
-  s.add_development_dependency 'gmetric', '0.1.3'
+  s.add_dependency 'gmetric', '0.1.3'
   s.add_dependency 'ruby-metrics', Metrics::VERSION
 end
