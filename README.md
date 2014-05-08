@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/johnewart/ruby-metrics.svg?branch=master)](https://travis-ci.org/johnewart/ruby-metrics)
 
 ## What is this?
 
