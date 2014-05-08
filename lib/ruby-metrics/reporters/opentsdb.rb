@@ -50,8 +50,8 @@ module Metrics
                 send_data name, instrument.get, instrument.units
               end
             when Metrics::Instruments::Timer
-              rate_units = "sec/#{instrument.units}"
-              time_units = "#{instrument.units}/sec"
+              rate_units = "#{instrument.units}/sec"
+              time_units = "sec/#{instrument.units}"
               send_data "#{name}.count", instrument.count, instrument.units
               [:fifteen_minute_rate, :five_minute_rate, :one_minute_rate].each do |attribute|
                 send_data "#{name}.#{attribute}", instrument.send(attribute), rate_units
