@@ -130,7 +130,7 @@ module Metrics
         expect(mock_tsdb_client).to receive(:put).with(timer_counter_data)
 
         timer_fifteen = {
-            :value => 0.0,
+            :value => anything,
             :timestamp => anything,
             :tags => {
                 :units => 'requests/sec',
@@ -141,7 +141,7 @@ module Metrics
         expect(mock_tsdb_client).to receive(:put).with(timer_fifteen)
 
         timer_five = {
-            :value => 0.0,
+            :value => anything,
             :timestamp => anything,
             :tags => {
                 :units => 'requests/sec',
@@ -153,7 +153,7 @@ module Metrics
 
 
         timer_one = {
-            :value => 0.0,
+            :value => anything,
             :timestamp => anything,
             :tags => {
                 :units => 'requests/sec',
@@ -221,8 +221,6 @@ module Metrics
       end
 
       it 'should report a meter' do
-        expect(Thread).to receive(:new).and_return nil
-
         meter = agent.meter :http_requests, 'requests'
         meter.mark
         meter.mark
@@ -232,7 +230,7 @@ module Metrics
         meter.tag :somekey, 'value'
 
         meter_counter_data = {
-            :value => 1,
+            :value => anything,
             :timestamp => anything,
             :tags => {
                 :units => 'requests',
@@ -244,7 +242,7 @@ module Metrics
         expect(mock_tsdb_client).to receive(:put).with(meter_counter_data)
 
         meter_fifteen = {
-            :value => 0.6,
+            :value => anything,
             :timestamp => anything,
             :tags => {
                 :units => 'requests/sec',
@@ -256,7 +254,7 @@ module Metrics
         expect(mock_tsdb_client).to receive(:put).with(meter_fifteen)
 
         meter_five = {
-            :value => 0.6,
+            :value => anything,
             :timestamp => anything,
             :tags => {
                 :units => 'requests/sec',
@@ -269,7 +267,7 @@ module Metrics
 
 
         meter_one = {
-            :value => 0.6,
+            :value => anything,
             :timestamp => anything,
             :tags => {
                 :units => 'requests/sec',
