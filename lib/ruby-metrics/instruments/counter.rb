@@ -1,11 +1,14 @@
+require_relative 'instrument'
+
 module Metrics
   module Instruments
-    class Counter
+    class Counter < Instrument
 
       attr_reader :units
 
       def initialize(options = {})
         @value = 0
+        @units = options[:units]
       end
 
       def inc(value = 1)

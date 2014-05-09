@@ -1,6 +1,8 @@
+require_relative 'instrument'
+
 module Metrics
   module Instruments
-    class Gauge
+    class Gauge < Instrument
       attr_reader :units
 
       def initialize(options = {}, &block)

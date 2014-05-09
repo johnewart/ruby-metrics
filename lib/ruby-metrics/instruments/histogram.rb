@@ -1,9 +1,10 @@
+require_relative 'instrument'
 require 'ruby-metrics/statistics/uniform_sample'
 require 'ruby-metrics/statistics/exponential_sample'
 
 module Metrics
   module Instruments
-    class Histogram
+    class Histogram < Instrument
 
       def initialize(type = :uniform)
         @count = 0

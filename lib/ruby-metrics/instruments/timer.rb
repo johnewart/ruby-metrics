@@ -1,8 +1,9 @@
-require File.join(File.dirname(__FILE__), '..', 'time_units')
+require_relative 'instrument'
+require 'ruby-metrics/time_units'
 
 module Metrics
   module Instruments
-    class Timer
+    class Timer < Instrument
       include Metrics::TimeConversion
 
       attr_reader :duration_unit, :rate_unit, :units

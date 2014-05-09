@@ -67,6 +67,10 @@ module Metrics
       @reporter = Reporter.new({:agent => self, :delay => delay})
     end
 
+    def stop_reporting
+      @reporter.stop
+    end
+
     def as_json(*_)
       @instruments
     end

@@ -1,8 +1,9 @@
+require_relative 'instrument'
 require 'ruby-metrics/time_units'
 
 module Metrics
   module Instruments
-    class Meter
+    class Meter < Instrument
       include Metrics::TimeConversion
 
       # From http://www.teamquest.com/pdfs/whitepaper/ldavg2.pdf
@@ -21,7 +22,7 @@ module Metrics
         @count  = 0
         @initialized = false
         @start_time = Time.now.to_f
-        @units = "#{options[:units]}"
+        @units = options[:units]
 
         @timer_thread = Thread.new do
           begin

@@ -5,7 +5,12 @@ module Metrics
 
     include Logging
 
+    def stop
+      @running = false
+    end
+
     def initialize(options = {})
+      @running = true
 
       if options[:agent] == nil
         raise "Need an agent to report data from"
@@ -15,13 +20,13 @@ module Metrics
       agent = options[:agent] 
 
       Thread.new {
-        while(true)
+        while(@running)
           agent.reporters.each do |name, service|
             service.report(agent)
           end
           sleep delay
         end
-      }.join
+      }
     end
 
   end
