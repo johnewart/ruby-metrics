@@ -16,6 +16,6 @@ Gem::Specification.new do |s|
   s.files         = ['lib/ruby-metrics/reporters/opentsdb.rb']
   s.require_paths = ["lib"]
 
-  s.add_dependency "opentsdb", '0.1.0'
+  s.add_dependency "opentsdb", '~> 0.1', '>= 0.1.0'
   s.add_dependency 'ruby-metrics', Metrics::VERSION
 end
