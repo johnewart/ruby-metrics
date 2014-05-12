@@ -3,22 +3,21 @@ module Metrics
     class UniformSample
       def initialize(size = 1028)
         @values = Array.new(size)
-        @count = 0
         @size = size
-        self.clear
+        clear
       end
-      
+
       def clear
-        (0..@values.length-1).each do |i|
+        (0...@values.size).each do |i|
           @values[i] = 0
         end
         @count = 0
       end
-      
+
       def size
-        @values.length
+        @values.size
       end
-      
+
       def update(value)
         if @count < @values.length
           @values[@count] = value
@@ -28,7 +27,7 @@ module Metrics
           @values[index] = value
         end
       end
-      
+
       def values
         @values.dup
       end
