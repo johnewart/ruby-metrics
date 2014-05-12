@@ -29,7 +29,7 @@ describe Metrics::Instruments::Timer do
     end
     
     it "should have quantiles of zero" do
-      @timer.quantiles.should == {0.99=>0.0, 0.97=>0.0, 0.95=>0.0, 0.75=>0.0, 0.5=>0.0, 0.25=>0.0}
+      @timer.quantiles.should == {0.25=>0.0, 0.50=>0.0, 0.75=>0.0, 0.95=>0.0, 0.97=>0.0, 0.98=>0.0, 0.99=>0.0 }
     end
     
     it "should have a mean rate of zero" do
@@ -85,7 +85,7 @@ describe Metrics::Instruments::Timer do
     end
     
     it "should accurately calculate percentiles" do 
-      @timer.quantiles.should == {0.99=>39.6, 0.97=>38.8, 0.95=>38.0, 0.75=>30.0, 0.5=>20.0, 0.25=>20.0}
+      @timer.quantiles.should == {0.25=>20.0, 0.5=>20.0, 0.75=>30.0, 0.95=>38.0, 0.97=>38.8, 0.98=>39.2, 0.99=>39.6}
     end
     
     it "should contain the series added" do

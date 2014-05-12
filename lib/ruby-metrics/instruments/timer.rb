@@ -8,6 +8,8 @@ module Metrics
 
       attr_reader :duration_unit, :rate_unit, :units
 
+      DEFAULT_PERCENTILES = [0.25, 0.50, 0.75, 0.95, 0.97, 0.98, 0.99]
+
       def initialize(options = {})
         @meter          = Meter.new
         @histogram      = ExponentialHistogram.new
@@ -20,17 +22,17 @@ module Metrics
       end
 
       def clear
+        @meter.clear
         @histogram.clear
       end
 
       def update(duration, unit)
-        mult = convert_to_ns(1, unit)
-        self.update_timer(duration * mult)
+        update_timer(convert_to_ns(duration, unit))
       end
 
-      def time(&block)
+      def time
         start_time = Time.now.to_f
-        result = block.call
+        result = yield
         time_diff = Time.now.to_f - start_time
         time_in_ns = convert_to_ns time_diff, :seconds
         update_timer(time_in_ns)
@@ -73,24 +75,17 @@ module Metrics
         scale_duration_to_ns @histogram.std_dev, @duration_unit
       end
 
-      def quantiles(percentiles = [0.99,0.97,0.95,0.75,0.5,0.25])
-        result = {}
-
-        @histogram.quantiles(percentiles).each do |k,v|
+      def quantiles(percentiles = DEFAULT_PERCENTILES)
+        @histogram.quantiles(percentiles).inject({}) do |result, (k, v)|
           result[k] = scale_duration_to_ns v, @duration_unit
+          result
         end
-
-        result
       end
 
       def values
-        result = []
-
-        @histogram.values.each do |value|
-          result << (scale_duration_to_ns value, @duration_unit)
+        @histogram.values.map do |value|
+          scale_duration_to_ns value, @duration_unit
         end
-
-        result
       end
 
       def update_timer(duration)
@@ -113,7 +108,7 @@ module Metrics
             :min => min,
             :max => max,
             :mean => mean,
-            :percentiles => quantiles([0.25, 0.50, 0.75, 0.95, 0.97, 0.98, 0.99]),
+            :percentiles => quantiles,
             :unit => @duration_unit
           }
         }
@@ -125,7 +120,7 @@ module Metrics
 
       private
       def scale_duration_to_ns(value, unit)
-        value.to_f / convert_to_ns(1, unit).to_f
+        value.to_f / convert_to_ns(1.0, unit)
       end
     end
   end
