@@ -5,15 +5,19 @@ require 'ruby-metrics/statistics/exponential_sample'
 module Metrics
   module Instruments
     class Histogram < Instrument
+      attr_reader :count
 
       def initialize(type = :uniform)
         @count = 0
-        case type
-        when :uniform
-          @sample = Metrics::Statistics::UniformSample.new
-        when :exponential
-          @sample = Metrics::Statistics::ExponentialSample.new
-        end
+        @sample =
+          case type
+          when :uniform
+            Metrics::Statistics::UniformSample.new
+          when :exponential
+            Metrics::Statistics::ExponentialSample.new
+          else
+            raise ArgumentError, "Unknown type #{type.inspect}"
+          end
         @min = nil
         @max = nil
         @sum = 0
@@ -27,7 +31,7 @@ module Metrics
       	@sample.update(value)
       	update_max(value)
       	update_min(value)
-        update_variance(value);
+        update_variance(value)
       end
 
       def clear
@@ -43,16 +47,13 @@ module Metrics
       def quantiles(percentiles)
         # Calculated using the same logic as R and Ecxel use
         # as outlined by the NIST here: http://www.itl.nist.gov/div898/handbook/prc/section2/prc252.htm
-        count = @count
-        scores = {}
-        values = @sample.values[0..count-1]
-
-        percentiles.each do |pct|
-          scores[pct] = 0.0
+        scores = percentiles.inject({}) do |a, pct|
+          a[pct] = 0.0
+          a
         end
 
-        if count > 0
-          values.sort!
+        if @count > 0
+          values = @sample.values[0...@count].sort
           percentiles.each do |pct|
             idx = pct * (values.length - 1) + 1.0
             if idx <= 1
@@ -67,7 +68,7 @@ module Metrics
           end
         end
 
-        return scores
+        scores
       end
 
       def update_min(value)
@@ -77,15 +78,14 @@ module Metrics
       end
 
       def update_max(value)
-        if (@max == nil || value > @max)
+        if @max.nil? || value > @max
           @max = value
         end
       end
 
       def update_variance(value)
-        count = @count
         old_m = @variance_m
-        new_m = @variance_m + ((value - old_m) / count)
+        new_m = @variance_m + ((value - old_m) / @count)
         new_s = @variance_s + ((value - old_m) * (value - new_m))
 
         @variance_m = new_m
@@ -93,59 +93,34 @@ module Metrics
       end
 
       def variance
-        count = @count
-        variance_s = @variance_s
-
-        if count <= 1
-          return 0.0
+        if @count <= 1
+          0.0
         else
-          return variance_s.to_f / (count - 1).to_i
+          @variance_s.to_f / (@count - 1).to_i
         end
       end
-
-      def count
-        count = @count
-        return count
-      end
-
 
       def max
-        max = @max
-        if max != nil
-          return max
-        else
-          return 0.0
-        end
+        @max || 0.0
       end
 
       def min
-        min = @min
-        if min != nil
-          return min
-        else
-          return 0.0
-        end
+        @min || 0.0
       end
 
       def mean
-        count = @count
-        sum = @sum
-
-        if count > 0
-          return sum / count
+        if @count > 0
+          @sum / @count
         else
-          return 0.0
+          0.0
         end
       end
 
       def std_dev
-        count = @count
-        variance = self.variance()
-
-        if count > 0
-          return Math.sqrt(variance)
+        if @count > 0
+          Math.sqrt(variance)
         else
-          return 0.0
+          0.0
         end
       end
 
@@ -155,11 +130,11 @@ module Metrics
 
       def as_json(*_)
         {
-          :min => self.min,
-          :max => self.max,
-          :mean => self.mean,
-          :variance => self.variance,
-          :percentiles => self.quantiles([0.25, 0.50, 0.75, 0.95, 0.97, 0.98, 0.99])
+          :min => min,
+          :max => max,
+          :mean => mean,
+          :variance => variance,
+          :percentiles => quantiles(Timer::DEFAULT_PERCENTILES)
         }
       end
 
