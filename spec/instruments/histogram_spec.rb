@@ -71,7 +71,7 @@ describe Metrics::Instruments::Histogram do
 
       it "should clear data correctly" do
         sample = Metrics::Statistics::UniformSample.new    
-        sample.should_receive(:clear)
+        sample.should_receive(:clear).twice
         Metrics::Statistics::UniformSample.should_receive(:new).and_return sample
 
         histogram = Metrics::Instruments::Histogram.new

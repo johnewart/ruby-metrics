@@ -8,7 +8,6 @@ module Metrics
       attr_reader :count
 
       def initialize(type = :uniform)
-        @count = 0
         @sample =
           case type
           when :uniform
@@ -18,11 +17,8 @@ module Metrics
           else
             raise ArgumentError, "Unknown type #{type.inspect}"
           end
-        @min = nil
-        @max = nil
-        @sum = 0
-        @variance_s = 0
-        @variance_m = -1
+
+        clear
       end
 
       def update(value)
@@ -83,9 +79,8 @@ module Metrics
       end
 
       def update_variance(value)
-        old_m = @variance_m
-        new_m = @variance_m + ((value - old_m) / @count)
-        new_s = @variance_s + ((value - old_m) * (value - new_m))
+        new_m = @variance_m + ((value - @variance_m) / @count)
+        new_s = @variance_s + ((value - @variance_m) * (value - new_m))
 
         @variance_m = new_m
         @variance_s = new_s
