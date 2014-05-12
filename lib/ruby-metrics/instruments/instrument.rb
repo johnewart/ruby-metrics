@@ -6,8 +6,7 @@ module Metrics
       end
 
       def tag(key, value)
-        @tags ||= {}
-        @tags[key] = value
+        tags[key] = value
       end
     end
   end
