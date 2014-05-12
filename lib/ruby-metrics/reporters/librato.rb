@@ -33,48 +33,50 @@ module Metrics
         https.start do |http| 
           result = http.request(req) 
           case result
-            when Net::HTTPCreated
-              # OK
-              puts "SENT!"
-            else
-              puts "FAILED TO SEND: #{https.inspect}"
+          when Net::HTTPCreated
+            # OK
+            puts "SENT!"
+          else
+            puts "FAILED TO SEND: #{https.inspect}"
           end
         end
       end
 
       def report(agent)
-
         agent.instruments.each do |name, instrument|
-          nothing_to_do = false
           measure_time = Time.now.to_i
 
-          case instrument.class.to_s
-            when "Metrics::Instruments::Counter"
-              value = instrument.to_i
-              post_url = "#{API_URL}/counters/#{name}.json" 
-              post_data = {:measure_time => measure_time, :value => value.to_i}
-              send_data(post_url, post_data)
-            when "Metrics::Instruments::Gauge"
-              post_url = "#{API_URL}/gauges/#{name}.json"
-              if instrument.get.is_a? Hash
-                instrument.get.each do |key, value|
-                  post_data = {:measure_time => measure_time, :source => key, :value => value}
-                  send_data(post_url, post_data)
-                end
-              else 
-                post_data = {:measure_time => measure_time, :value => instrument.get}
-                send_data(post_url, post_data)
-              end
-            when "Metrics::Instruments::Timer"
-              post_url = "#{API_URL}/gauges/#{name}.json"
-              common_data = {:measure_time => measure_time}
+          case instrument
+          when Metrics::Instruments::Counter
+            send_data "#{API_URL}/counters/#{name}.json",
+                      :measure_time => measure_time,
+                      :value        => instrument.to_i
 
-              [:count, :fifteen_minute_rate, :five_minute_rate, :one_minute_rate, :min, :max, :mean].each do |attribute|
-                post_data = {:source => attribute, :value => instrument.send(attribute)}.merge(common_data)
-                send_data(post_url, post_data)
+          when Metrics::Instruments::Gauge
+            post_url = "#{API_URL}/gauges/#{name}.json"
+            if instrument.get.is_a? Hash
+              instrument.get.each do |key, value|
+                send_data post_url,
+                          :measure_time => measure_time,
+                          :source       => key,
+                          :value        => value
               end
-            else 
-              puts "Unhandled instrument"
+            else
+              send_data post_url,
+                        :measure_time => measure_time,
+                        :value        => instrument.get
+            end
+
+          when Metrics::Instruments::Timer
+            [:count, :fifteen_minute_rate, :five_minute_rate, :one_minute_rate, :min, :max, :mean].each do |attribute|
+              send_data "#{API_URL}/gauges/#{name}.json",
+                        :measure_time => measure_time,
+                        :source       => attribute,
+                        :value        => instrument.send(attribute)
+            end
+
+          else
+            puts "Unhandled instrument"
           end
         end
       end
