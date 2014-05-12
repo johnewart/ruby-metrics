@@ -20,7 +20,7 @@ module Metrics
       agent = options[:agent] 
 
       Thread.new {
-        while(@running)
+        while @running
           agent.reporters.each do |name, service|
             service.report(agent)
           end
