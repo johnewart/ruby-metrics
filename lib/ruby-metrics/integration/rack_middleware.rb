@@ -15,54 +15,41 @@ module Metrics
     module Rack
       class Middleware
         
-        attr_accessor :app, :options, :agent,
-                      # integration metrics
-                      :requests, :uncaught_exceptions,
-                      :status_codes
-        
+        attr_accessor :app, :options, :agent
+
         def initialize(app, options ={})
           @app      = app
           @options  = {:show => "/stats"}.merge(options)
           @agent    = @options.delete(:agent) || Agent.new
-          
-          # Integration Metrics
-          @requests             = @agent.timer(:_requests)
-          @uncaught_exceptions  = @agent.counter(:_uncaught_exceptions)
-          
-          # HTTP Status Codes
-          @status_codes = {
-            1 => @agent.counter(:_status_1xx),
-            2 => @agent.counter(:_status_2xx),
-            3 => @agent.counter(:_status_3xx),
-            4 => @agent.counter(:_status_4xx),
-            5 => @agent.counter(:_status_5xx)
-          }
         end
-        
+
         def call(env)
           return show(env) if show?(env)
           
           env['metrics.agent'] = @agent
           
-          status, headers, body = self.requests.time{ @app.call(env) }
-          
-          if status_counter = self.status_codes[status / 100]
-            status_counter.incr
-          end
-          
+          status, headers, body = time_request { @app.call(env) }
+
+          incr_status_code_counter(status / 100)
+
           [status, headers, body]
         rescue Exception
           # TODO: add "last_uncaught_exception" with string of error
-          self.uncaught_exceptions.incr
+          incr_uncaught_exceptions
           raise
         end
-        
-        def show?(env, test = self.options[:show])
+
+      private
+        def show?(env, test = options[:show])
           case
-          when String === test;         env['PATH_INFO'] == test
-          when Regexp === test;         env['PATH_INFO'] =~ test
-          when test.respond_to?(:call); test.call(env)
-          else                          test
+          when String === test
+            env['PATH_INFO'] == test
+          when Regexp === test
+            env['PATH_INFO'] =~ test
+          when test.respond_to?(:call)
+            test.call(env)
+          else
+            test
           end
         end
         
@@ -75,7 +62,18 @@ module Metrics
             [body]
           ]
         end
-        
+
+        def time_request(&block)
+          @agent.timer(:_requests).time(&block)
+        end
+
+        def incr_uncaught_exceptions
+          @agent.counter(:_uncaught_exceptions).incr
+        end
+
+        def incr_status_code_counter(hundred)
+          @agent.counter(:"_status_#{hundred}xx").incr
+        end
       end
     end
   end

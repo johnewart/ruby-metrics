@@ -12,7 +12,7 @@ module Metrics
                       :requests, :uncaught_exceptions,
                       :status_codes
         
-        def initialize(options ={})
+        def initialize(options = {})
           @options  = options
           @agent    = @options.delete(:agent) || Agent.new
         end

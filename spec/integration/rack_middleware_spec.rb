@@ -54,7 +54,7 @@ describe Metrics::Integration::Rack::Middleware do
       it "should count all requests" do
         lambda do
           get '/'
-        end.should change{ app.requests.count }.by(1)
+        end.should change{ app.agent.timer(:_requests).count }.by(1)
       end
       
       it "should count uncaught exceptions" do
@@ -63,22 +63,22 @@ describe Metrics::Integration::Rack::Middleware do
           lambda do
             get '/'
           end.should raise_error
-        end.should change{ app.uncaught_exceptions.to_i }.by(1)
+        end.should change{ app.agent.counter(:_uncaught_exceptions).to_i }.by(1)
       end
       
       it "should time request length" do
         length = 0.1
         @app = lambda{ |env| sleep(length); [200, {}, ['']] }
         get '/'
-        app.requests.mean.should be_within(length / 10).of(length)
+        app.agent.timer(:_requests).mean.should be_within(length / 10).of(length)
       end
-      
-      [ 200, 304, 404, 500].each do |status|
+
+      [200, 304, 404, 500].each do |status|
         it "should count #{status} HTTP status code as #{status / 100}xx" do
           @app = lambda{ |env| [status, {}, []] }
           lambda do
             get '/'
-          end.should change{ app.status_codes[status / 100].to_i }.by(1)
+          end.should change{ app.agent.counter(:"_status_#{status / 100}xx").to_i }.by(1)
         end
       end
       
