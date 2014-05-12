@@ -45,34 +45,33 @@ module Metrics
       end
 
       def quantiles(percentiles)
-        # Calculated using the same logic as R and Ecxel use
+        # Calculated using the same logic as R and Excel use
         # as outlined by the NIST here: http://www.itl.nist.gov/div898/handbook/prc/section2/prc252.htm
-        scores = percentiles.inject({}) do |a, pct|
-          a[pct] = 0.0
-          a
-        end
 
-        if @count > 0
-          values = @sample.values[0...@count].sort
-          percentiles.each do |pct|
-            idx = pct * (values.length - 1) + 1.0
-            if idx <= 1
-              scores[pct] = values[0]
-            elsif idx >= values.length
-              scores[pct] = values[values.length-1]
+        sorted_values = @sample.values[0...@count].sort
+        scores = { }
+        percentiles.each do |pct|
+          scores[pct] =
+            if @count == 0
+              0.0
             else
-              lower = values[idx.to_i - 1]
-              upper = values[idx.to_i]
-              scores[pct] = lower + (idx - idx.floor) * (upper - lower)
-            end
+              index = pct * (sorted_values.length - 1) + 1.0
+              if index <= 1
+                sorted_values.first
+              elsif index >= sorted_values.length
+                sorted_values.last
+              else
+                lower = sorted_values[index.to_i - 1]
+                upper = sorted_values[index.to_i]
+                lower + (index - index.floor) * (upper - lower)
+              end
           end
         end
-
         scores
       end
 
       def update_min(value)
-        if (@min == nil || value < @min)
+        if @min.nil? || value < @min
           @min = value
         end
       end
@@ -96,7 +95,7 @@ module Metrics
         if @count <= 1
           0.0
         else
-          @variance_s.to_f / (@count - 1).to_i
+          @variance_s.to_f / (@count - 1)
         end
       end
 
@@ -130,10 +129,10 @@ module Metrics
 
       def as_json(*_)
         {
-          :min => min,
-          :max => max,
-          :mean => mean,
-          :variance => variance,
+          :min         => min,
+          :max         => max,
+          :mean        => mean,
+          :variance    => variance,
           :percentiles => quantiles(Timer::DEFAULT_PERCENTILES)
         }
       end
