@@ -1,42 +1,36 @@
 module Metrics
-  
-  class TimeUnit 
-    def self.to_nsec(mult = 1)
-      raise NotImplementedError
-    end
-  end
-  
-  class Nanoseconds < TimeUnit
+
+  module Nanoseconds
     def self.to_nsec(mult = 1)
       mult
     end
   end
   
-  class Microseconds < TimeUnit
+  module Microseconds
     def self.to_nsec(mult = 1)
       1000 * mult
     end
   end
   
-  class Milliseconds < TimeUnit
+  module Milliseconds
     def self.to_nsec(mult = 1)
       1000000 * mult
     end
   end
   
-  class Seconds < TimeUnit
+  module Seconds
     def self.to_nsec(mult = 1)
       1000000000 * mult
     end
   end
   
-  class Minutes < TimeUnit
+  module Minutes
     def self.to_nsec(mult = 1)
       60000000000 * mult
     end
   end
   
-  class Hours < TimeUnit
+  module Hours
     def self.to_nsec(mult = 1)
       3600000000000 * mult
     end
@@ -53,11 +47,11 @@ module Metrics
     }
   
     def convert_to_ns(value, unit)
-      (UNITS[unit].to_nsec.to_f * value.to_f)
+      UNITS[unit].to_nsec.to_f * value.to_f
     end
 
     def scale_time_units(source, dest)
-      (UNITS[source].to_nsec.to_f) / (UNITS[dest].to_nsec.to_f)
+      UNITS[source].to_nsec.to_f / UNITS[dest].to_nsec.to_f
     end
   end
 end
