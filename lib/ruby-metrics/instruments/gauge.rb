@@ -12,7 +12,7 @@ module Metrics
       end
 
       def get
-        instance_exec(&@block)
+        @block.call
       end
 
       def as_json(*_)
